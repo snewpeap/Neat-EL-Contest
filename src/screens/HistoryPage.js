@@ -4,7 +4,6 @@ import {
     Content,
     Text,
 } from 'native-base';
-import HaveDone from '../HaveDone';
 import History from '../History';
 
 class HistoryPage extends Component{

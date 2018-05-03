@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {Body, Card, CardItem, Container, Content, Text} from "native-base";
+import {Card, Container, Content, Text, View} from "native-base";
 import moment from 'moment'
+import HistoryItem from './HistoryItem';
 
 let historys = [
-    {titl: 'asd', lengt: '123min', datee: moment()},
+    {titl: 'asd', lengt: '123min', datee: '2018.5.3'},
+    {titl: '哈哈', lengt: '4min', datee: '2018.5.33'},
 ];
 
 export default class History extends Component{
@@ -11,24 +13,25 @@ export default class History extends Component{
         super(props);
         this.state = {};
     }
-    empty(){
-        for(let history in this.historys){
-            return true;
-        }return false;
+    onDelete(i){
+        historys.splice(i, 1);
+        this.forceUpdate();
     }
     render(){
         return(
             <Container>
                 <Content>
-                    <Card>
-                        <CardItem>
-                            <Body>
-                            <Text>{historys[0].datee}</Text>
-                            </Body>
-                        </CardItem>
-                    </Card>
+                {Object.keys(historys).length !== 0?(
+                    <View>{
+                        historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(i)}/>)
+                    }
+                    </View>
+                ):(
+                    <Text>Have no history.</Text>
+                )
+                }
                 </Content>
             </Container>
-        )
+        );
     }
 }

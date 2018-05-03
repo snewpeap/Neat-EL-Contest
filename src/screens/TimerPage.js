@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Timer_25 from  "../Timer_25";
+//import Timer_25 from  "../Timer_25";
 
 import {
     Container,
@@ -19,7 +19,6 @@ class TimerPage extends Component{
             <Container>
                 <Content>
                     <Text>This is Timer Page.</Text>
-                    <Timer_25/>
                 </Content>
             </Container>
         );
