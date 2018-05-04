@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Timer_25 from  "../Timer_25";
-
+import Timer from "../Timer";
+import {TouchableHighlight,View} from 'react-native';
 import {
     Container,
     Content,
@@ -12,17 +12,57 @@ import {
 class TimerPage extends Component{
     constructor(props){
         super(props);
-        this.state = {};
+        let isBegin_25True = false;
+        let isBegin_50True = false;
+        this.state = {
+            isBegin_25True:isBegin_25True,
+            isBegin_50True:isBegin_50True,
+        };
     }
+    _Begin_25=()=>{
+        let that = this;
+       that.setState({isBegin_25True : true,})
+    };
+    _Begin_50=()=>{
+        let that = this;
+        that.setState({isBegin_50True : true,})
+    };
     render(){
+        if(this.state.isBegin_25True && !this.state.isBegin_50True){
         return (
             <Container>
                 <Content>
-                    <Text>This is Timer Page.</Text>
-                    <Timer_25/>
+                    <Timer timeLeft={24}/>
                 </Content>
             </Container>
-        );
+        );}
+        else if(this.state.isBegin_50True && !this.state.isBegin_25True){
+           return(
+               <Container>
+                   <Content>
+                       <Timer timeLeft={49}/>
+                   </Content>
+               </Container>
+           )}
+           else{
+            return(
+                <Container>
+                    <Content>
+                        <Text>This is Timer Page.</Text>
+                        <View style={{flexDirection : 'row'}}>
+                            <TouchableHighlight onPress={this._Begin_25}>
+
+                                <Text>短时专注</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={this._Begin_50}>
+
+                                <Text>长时专注</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </Content>
+                </Container>
+            )
+        }
     }
 }
 
