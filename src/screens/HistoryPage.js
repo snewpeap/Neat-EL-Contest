@@ -5,7 +5,8 @@ import {
     Text,
 } from 'native-base';
 
-//import History from '../History';
+import History from '../History';
+
 
 class HistoryPage extends Component{
     constructor(props){

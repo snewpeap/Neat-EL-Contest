@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+
 import Timer from "../Timer";
 import {TouchableHighlight,View} from 'react-native';
+
+
+
 import {
     Container,
     Content,
@@ -33,6 +37,7 @@ class TimerPage extends Component{
             <Container>
                 <Content>
                     <Timer timeLeft={24}/>
+                    <Text>This is Timer Page.</Text>
                 </Content>
             </Container>
         );}
