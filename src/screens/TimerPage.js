@@ -37,7 +37,6 @@ class TimerPage extends Component{
             <Container>
                 <Content>
                     <Timer timeLeft={24}/>
-                    <Text>This is Timer Page.</Text>
                 </Content>
             </Container>
         );}
@@ -56,11 +55,9 @@ class TimerPage extends Component{
                         <Text>This is Timer Page.</Text>
                         <View style={{flexDirection : 'row'}}>
                             <TouchableHighlight onPress={this._Begin_25}>
-
                                 <Text>短时专注</Text>
                             </TouchableHighlight>
                             <TouchableHighlight onPress={this._Begin_50}>
-
                                 <Text>长时专注</Text>
                             </TouchableHighlight>
                         </View>

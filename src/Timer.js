@@ -1,23 +1,133 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, TouchableHighlight,View} from 'react-native';
 import TimerPage from './screens/TimerPage';
+const Sound = require('react-native-sound');
+
 
 class Timer extends Component{
+
     constructor(props) {
         super(props);
-        let timeLeft = this.props.timeLeft > 0? this.props.timeLeft : 24;
+        let timeLeft = this.props.timeLeft > 0 ? this.props.timeLeft : 24;
         let secondLeft = this.props.secondLeft > 0 ? this.props.secondLeft : 59;
         let isBack = false;
         let isPause = false;
-        let isResume = false;
+        let isResume = true;
+        let isSoundPause = true;
+        let isSoundPlay = false;
+        let isBeforeClose = false;
+        Sound.setCategory('Playback');
         this.state = {
             timeLeft: timeLeft,
-            secondLeft : secondLeft,
-            isBack : isBack,
-            isPause : isPause,
-            isResume : isResume
+            secondLeft: secondLeft,
+            isBack: isBack,
+            isPause: isPause,
+            isResume: isResume,
+            loopingSound : undefined,
+            isSoundPause : isSoundPause,
+            isSoundPlay : isSoundPlay,
+            isBeforeClose : isBeforeClose,
         };
+       /* this.playSoundBundle = ()=>{
+            const whiteSound = new Sound('rain.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }else{
+                    whiteSound.setSpeed(1);
+                    whiteSound.play(()=>whiteSound.release());
+                }
+            })
+        }; */
+
+        this.playSoundLoop = () =>{
+            if(this.state.loopingSound){
+                return;
+            }
+            const genRandom =Math.random() * 5 | 0;
+            if (genRandom === 0 ){const whiteSound = new Sound('blue_and_white_flycatcher.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                    isBeforeClose : false,
+                })}
+            else if(genRandom === 1){const whiteSound = new Sound('gentle_ocean_waves.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                    isBeforeClose : false,
+                })}
+            else if(genRandom === 2){ const whiteSound = new Sound('rain.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                    isBeforeClose : false,
+                })}
+           else if(genRandom === 3){
+                const whiteSound = new Sound('small_stream.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                    if(error){
+                        alert('Sound error');
+                    }
+                    whiteSound.setNumberOfLoops(-1);
+                    whiteSound.play();
+                });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                    isBeforeClose : false,
+                })}
+            else{ const whiteSound = new Sound('water.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                    isBeforeClose : false,
+                })}
+    };
+
+      this.stopSoundLooped=()=>{
+      if(!this.state.loopingSound){
+          return;
+      }
+      this.state.loopingSound
+          .stop()
+          .release();
+      this.setState({
+          loopingSound : null,
+          isSoundPlay : false,
+          isSoundPause : true,
+          isBeforeClose : true,
+      })
+      };
     }
+
 
     _onPausePress = ()=>{
         let that = this;
@@ -25,11 +135,94 @@ class Timer extends Component{
         that.setState({
             isPause:true,
             isResume : false,
-        })
+            isSoundPlay : true,
+        });
+        if (that.state.isBeforeClose === false){
+            if(!this.state.loopingSound){
+                return;
+            }
+            this.state.loopingSound
+                .stop()
+                .release();
+            this.setState({
+                loopingSound : null,
+                isSoundPause : true,
+            })
+        }
     };
     _onResumePress = () =>{
         let that = this;
         this.countTime(that.state.timeLeft,that.state._afterEnd);
+        if(that.state.isBeforeClose === false){
+            if(this.state.loopingSound){
+                return;
+            }
+            const genRandom =Math.random() * 5 | 0;
+            if (genRandom === 0 ){const whiteSound = new Sound('blue_and_white_flycatcher.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                })}
+            else if(genRandom === 1){const whiteSound = new Sound('gentle_ocean_waves.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                })}
+            else if(genRandom === 2){ const whiteSound = new Sound('rain.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                })}
+            else if(genRandom === 3){
+                const whiteSound = new Sound('small_stream.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                    if(error){
+                        alert('Sound error');
+                    }
+                    whiteSound.setNumberOfLoops(-1);
+                    whiteSound.play();
+                });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                })}
+            else{ const whiteSound = new Sound('water.mp3',Sound.MAIN_BUNDLE,(error)=>{
+                if(error){
+                    alert('Sound error');
+                }
+                whiteSound.setNumberOfLoops(-1);
+                whiteSound.play();
+            });
+                this.setState({
+                    loopingSound : whiteSound,
+                    isSoundPlay : true,
+                    isSoundPause : false,
+                })}
+        }
+        else{
+            that.setState({isSoundPlay : false})
+        }
         that.setState({
             isPause : false,
             isResume : true,
@@ -69,6 +262,7 @@ class Timer extends Component{
     };
 
 
+
     render(){
 
 
@@ -82,6 +276,12 @@ class Timer extends Component{
                 <Text style={styles.bigblue}>Time Over</Text>
                     <TouchableHighlight onPress={()=>this.setState({isBack:true})}>
                         <Text style={styles.buttonBlack}>返回</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight disabled={this.state.isSoundPlay} onPress={this.playSoundLoop}>
+                        <Text style={styles.buttonBlack}>播放音乐</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight disabled={this.state.isSoundPause} onPress={this.stopSoundLooped}>
+                        <Text style={styles.buttonBlack}>停止播放</Text>
                     </TouchableHighlight>
                 </View>
             )
@@ -98,6 +298,12 @@ class Timer extends Component{
                 </TouchableHighlight>
                 <TouchableHighlight disabled={this.state.isResume} onPress={this._onResumePress}>
                     <Text style={styles.buttonBlack}>继续</Text>
+                </TouchableHighlight>
+                <TouchableHighlight disabled={this.state.isSoundPlay} onPress={this.playSoundLoop}>
+                    <Text style={styles.buttonBlack}>播放音乐</Text>
+                </TouchableHighlight>
+                <TouchableHighlight disabled={this.state.isSoundPause} onPress={this.stopSoundLooped}>
+                    <Text style={styles.buttonBlack}>停止播放</Text>
                 </TouchableHighlight>
             </View>
             </View>
@@ -116,6 +322,12 @@ class Timer extends Component{
                         <TouchableHighlight disabled={this.state.isResume} onPress={this._onResumePress}>
                             <Text style={styles.buttonBlack}>继续</Text>
                         </TouchableHighlight>
+                        <TouchableHighlight disabled={this.state.isSoundPlay} onPress={this.playSoundLoop}>
+                            <Text style={styles.buttonBlack}>播放音乐</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight disabled={this.state.isSoundPause} onPress={this.stopSoundLooped}>
+                            <Text style={styles.buttonBlack}>停止播放</Text>
+                        </TouchableHighlight>
                     </View>
                 </View>
             )
@@ -132,6 +344,12 @@ class Timer extends Component{
                         </TouchableHighlight>
                         <TouchableHighlight disabled={this.state.isResume} onPress={this._onResumePress}>
                             <Text style={styles.buttonBlack}>继续</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight disabled={this.state.isSoundPlay} onPress={this.playSoundLoop}>
+                            <Text style={styles.buttonBlack}>播放音乐</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight disabled={this.state.isSoundPause} onPress={this.stopSoundLooped}>
+                            <Text style={styles.buttonBlack}>停止播放</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -150,6 +368,12 @@ class Timer extends Component{
             <TouchableHighlight disabled={this.state.isResume} onPress={this._onResumePress}>
                 <Text style={styles.buttonBlack}>继续</Text>
                 </TouchableHighlight>
+                    <TouchableHighlight disabled={this.state.isSoundPlay} onPress={this.playSoundLoop}>
+                        <Text style={styles.buttonBlack}>播放音乐</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight disabled={this.state.isSoundPause} onPress={this.stopSoundLooped}>
+                        <Text style={styles.buttonBlack}>停止播放</Text>
+                    </TouchableHighlight>
             </View>
                 </View>
             )
@@ -169,6 +393,15 @@ const styles = StyleSheet.create({
     buttonBlack : {
         color : 'black',
         fontWeight: 'bold',
+    },
+     button: {
+        fontSize: 20,
+        backgroundColor: 'silver',
+        padding: 5,
+        },
+    feature: {
+        padding: 20,
+        alignSelf: 'stretch',
     }
 });
 module.exports = Timer;
