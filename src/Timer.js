@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, TouchableHighlight,View} from 'react-native';
 import TimerPage from './screens/TimerPage';
+import moment from "moment";
+import {DeviceEventEmitter} from 'react-native';
 
 class Timer extends Component{
     constructor(props) {
@@ -47,19 +49,33 @@ class Timer extends Component{
                     that.setState({
                         secondLeft: 59,
                         timeLeft: that.state.timeLeft - 1,
-                    })}
-                 else {
+                    })
+                } else {
                     let totalTime = that.state.secondLeft;
                     that.setState({
                         secondLeft: totalTime - 1,
                     })
                 }
-            }, 1000)
+            }, 1)
         }
     }
 
     static _afterEnd(){
-        console.log('Time Over!!!');
+        var newHistory = {
+            titl:'default title',
+            lengt:this.props.timeLeft.toString() + 'min',
+            datee:moment(),
+        };
+        historyStorage.save({
+            key:'history',
+            data:newHistory,
+            id:Math.max.apply(null, historyStorage.getIdsForKey('history')) + 1,
+            expires:null,
+        }).then(
+            () => {
+                DeviceEventEmitter.emit('flush',null);
+            }
+        )
     }
 
     componentDidMount () {
@@ -70,8 +86,6 @@ class Timer extends Component{
 
 
     render(){
-
-
         let display_1 = this.state.timeLeft;
         let display_2 = this.state.secondLeft;
         if(this.state.isBack){return(<TimerPage/>)}
@@ -80,7 +94,10 @@ class Timer extends Component{
             return(
                 <View>
                 <Text style={styles.bigblue}>Time Over</Text>
-                    <TouchableHighlight onPress={()=>this.setState({isBack:true})}>
+                    <TouchableHighlight onPress={()=>{
+                        this.Timer._afterEnd();
+                        this.setState({isBack:true});
+                    }}>
                         <Text style={styles.buttonBlack}>返回</Text>
                     </TouchableHighlight>
                 </View>
@@ -171,5 +188,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 });
-module.exports = Timer;
+export default Timer;
 
