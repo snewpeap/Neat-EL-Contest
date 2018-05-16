@@ -4,6 +4,7 @@ import {StackNavigator, TabBarBottom, TabNavigator} from 'react-navigation';
 import HistoryPage from "./screens/HistoryPage";
 import TimerPage from "./screens/TimerPage";
 import SocialPage from "./screens/SocialPage";
+import {ImageBackground, StyleSheet} from "react-native";
 
 const Tab = TabNavigator(
     {
@@ -12,7 +13,7 @@ const Tab = TabNavigator(
             navigationOptions: ({navigation}) => ({
                 tabBarLabel: 'History',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'paper' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'paper' style={{color: focused?'white':'#313fff'}}/>
                 )
             }),
         },
@@ -21,7 +22,7 @@ const Tab = TabNavigator(
             navigationOptions: ({navigation}) => ({
                 tabBarLabel: 'Timer',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'alarm' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'alarm' style={{color: focused?'white':'#313fff'}}/>
                 )
             }),
         },
@@ -30,7 +31,7 @@ const Tab = TabNavigator(
             navigationOptions: ({navigation}) => ({
                 tabBarLabel: 'Social',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'person' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'person' style={{color: focused?'white':'#313fff'}}/>
                 )
             }),
         },
@@ -44,9 +45,9 @@ const Tab = TabNavigator(
         initialRouteName: 'TimerPage',
         tabBarOptions:{
             activeTintColor: 'white',
-            inactiveTintColor: '#ddaa99',
+            inactiveTintColor: '#313fff',
             style:{
-                backgroundColor: '#ff4000',
+                backgroundColor: '#16132e',
             },
         }
     },
@@ -72,7 +73,7 @@ const Nav = StackNavigator(
 export default class App extends Component{
     render(){
         return(
-            <Nav/>
+            <Nav isPlaySound = {this.props.isPlaySound}/>
         );
     }
 }
