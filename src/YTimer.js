@@ -132,7 +132,6 @@ export default class YTimer extends Component{
                         <Tiktok timee={parseInt(this.state.targetTime) * 60}/>
                     </Content>
                 )}
-                <Text>Fuck!</Text>
             </Container>
         );
     }

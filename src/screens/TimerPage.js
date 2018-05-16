@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import YTimer from "../YTimer";
-import {Container, Content, Text} from 'native-base';
+import {Container, Content} from 'native-base';
+import Timer from "../Timer";
 
 class TimerPage extends Component{
     constructor(props){
@@ -11,8 +12,7 @@ class TimerPage extends Component{
         return (
             <Container>
                 <Content>
-                    <Text>This is Timer Page.</Text>
-                    <YTimer/>
+                    <Timer/>
                 </Content>
             </Container>
         );

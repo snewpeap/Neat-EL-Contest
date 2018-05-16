@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {Button, Container, Content, Picker, Text, View} from "native-base";
-import {Alert, DeviceEventEmitter, ImageBackground, StyleSheet,} from 'react-native';
+import {DeviceEventEmitter, StyleSheet,} from 'react-native';
 import moment from "moment";
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
@@ -123,7 +123,6 @@ export default class Timer extends SoundPlay {
             datee: moment().format('MMM Do').toString(),
             isAbandoned: abandoned.toString(),
         };
-        alert(newHistory.datee);
         DeviceEventEmitter.emit('flush', newHistory);
         this.setState({isReady: true});
     };

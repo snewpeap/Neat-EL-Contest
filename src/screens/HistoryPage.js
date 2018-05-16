@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
     Container,
     Content,
-    Text,
-} from 'native-base';
+    } from 'native-base';
 
 import History from '../History';
 
@@ -17,7 +16,6 @@ class HistoryPage extends Component{
         return (
             <Container>
                 <Content>
-                    <Text>This is History Page.</Text>
                     <History/>
                 </Content>
             </Container>
