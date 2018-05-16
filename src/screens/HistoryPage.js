@@ -18,7 +18,7 @@ class HistoryPage extends Component{
             <Container>
                 <Content>
                     <Text>This is History Page.</Text>
-                <History/>
+                    <History/>
                 </Content>
             </Container>
         );

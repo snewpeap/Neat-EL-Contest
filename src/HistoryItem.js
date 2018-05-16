@@ -13,6 +13,7 @@ export default class HistoryItem extends Component{
                     <Text>任务名称：{this.props.detail.titl}</Text>
                     <Text>专注时长：{this.props.detail.lengt}</Text>
                     <Text>日期：{this.props.detail.datee}</Text>
+                    <Text>{this.props.detail.isAbandoned === 'true'?'但是你放弃了，废物':null}</Text>
                     </Body>
                 </CardItem>
                 <CardItem footer button onPress={() => this.onDelete()}>
