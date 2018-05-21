@@ -4,9 +4,11 @@ import HistoryItem from './HistoryItem';
 import {DeviceEventEmitter} from 'react-native';
 
 
+
 export default class History extends Component{
     constructor(props){
         super(props);
+
         this.state = {
             historys:[],
         };
@@ -17,12 +19,12 @@ export default class History extends Component{
     componentDidMount(){
         DeviceEventEmitter.addListener('flush',(newHistory) => {
             fetch(localURL, {
-                method:'PUT',
+                method:'POST',
                 headers:{
                     Accept: 'application/json',
                     'Content-Type':'application/json',
                 },
-                body:JSON.stringify({"history":newHistory}),
+                body:JSON.stringify({"history":newHistory})
             })
                 .then((success) => {
                     alert(JSON.stringify({"history":newHistory}));
@@ -43,8 +45,9 @@ export default class History extends Component{
             }
         }
         historyAfterDel = {"history":historyAfterDel};
+
         fetch(localURL,{
-            method:'PUT',
+            method:'POST',
             headers:{
                 Accept: 'application/json',
             },

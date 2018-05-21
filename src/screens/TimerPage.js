@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import YTimer from "../YTimer";
 import {Container, Content} from 'native-base';
 import Timer from "../Timer";
 

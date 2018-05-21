@@ -5,6 +5,8 @@ import { StyleProvider } from 'native-base';
 import App from './App';
 import getTheme from "../native-base-theme/components"
 import variables from "../native-base-theme/variables/commonColor"
+import SplashScreen from "react-native-splash-screen";
+
 
 let historyStorage = new Storage({
     size: 1000,
@@ -13,12 +15,17 @@ let historyStorage = new Storage({
 });
 
 export default class Setup extends Component{
+    componentDidMount() {
+        SplashScreen.hide();
+    }
     constructor(props){
         super(props);
         global.historyStorage = historyStorage;
         global.isLogin = false;
         global.localURL = "http://localhost:8081/Data.json";
     }
+
+
     render(){
         return (
             <StyleProvider style = {getTheme(variables)}>
