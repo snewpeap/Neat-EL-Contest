@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
-import {Button, Container, Content, Picker, Text, View} from "native-base";
-import {DeviceEventEmitter, StyleSheet,} from 'react-native';
-import moment from "moment";
+import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text, View} from "native-base";
+import {DeviceEventEmitter, Modal, StyleSheet,} from 'react-native';
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
 
@@ -17,25 +16,30 @@ class Tiktok extends SoundPlay{
             min:Tiktok.formatter(this.props.timee / 60),
             sec:Tiktok.formatter(this.props.timee % 60),
             isPause:false,
-            choose : choose,
+            choose: choose,
             isPlaySound:isPlaySound
         };
     }
+    d1 = null;
     static formatter(timeLeft){
         if (timeLeft < 10){
             return '0'+parseInt(timeLeft);
         }else {
-            return timeLeft;
+            return parseInt(timeLeft);
         }
     }
-    endCount(abandoned: boolean){
-        DeviceEventEmitter.emit('timesUp',{abandoned:abandoned})
+    endCount(){
+        DeviceEventEmitter.emit('timesUp')
     }
     componentWillMount(){
         this.tiktok();
     }
+    componentDidMount(){
+        this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
+    }
     componentWillUnmount(){
         countDown && clearInterval(countDown);
+        this.d1.remove();
         this.stopSoundLooped();
     }
     tiktok(){
@@ -62,25 +66,20 @@ class Tiktok extends SoundPlay{
         this.setState({isPause:!this.state.isPause});
     };
     onAbandonButtonClick=() => {
-        this.stopSoundLooped();
-        this.endCount(true);
+        this.stopCountDown();
+        this.setState({isPause:true});
+        this.props.onAbandon();
     };
     render(){
         return(
-            <View>
-                <Text  style={{textAlign : 'center',fontSize: 47, color:'#5561ff',fontWeight:'bold'}}>{this.state.min} : {this.state.sec}</Text>
-                <View style={{alignItems:'center'}}>
-                    <View style={{flex : 1}}>
-                <Button  rounded  onPress={() => this.onButtonClick()}>
-                    <Text style={styles.buttonText}>{this.state.isPause? '继续':'暂停'}</Text>
+            <View style={[{alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
+                <Text textAlign='center' style={[{fontSize: 30, color:'#ff4000'}]}>{this.state.min} : {this.state.sec}</Text>
+                <Button block onPress={() => this.onButtonClick()}>
+                    <Text>{this.state.isPause? '继续':'暂停'}</Text>
                 </Button>
-                    </View>
-                    <View style={{flex : 1}}>
-                <Button  rounded  onPress={() => this.onAbandonButtonClick()}>
-                    <Text style={styles.buttonText}>放弃</Text>
+                <Button block onPress={() => this.onAbandonButtonClick()}>
+                    <Text>放弃</Text>
                 </Button>
-                    </View>
-                </View>
             </View>
         );
     }
@@ -93,16 +92,23 @@ export default class Timer extends SoundPlay {
         super(props);
         this.state = {
             targetTime: "0",
+            title:null,
             isReady: true,
+            isPlaySound: true,
             selected: undefined,
-            isPlaySound : true,
+            modalTransparent: true,
+            modalVisible:false,
         };
     }
+    l2 = null;
     componentDidMount(){
-        this.l2 = DeviceEventEmitter.addListener('timesUp',(value) => {this.timesUp(value.abandoned);});
+        this.l2 = DeviceEventEmitter.addListener('timesUp',() => {this.timesUp();});
     }
     componentWillUnmount(){
         this.l2.remove();
+    }
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
     }
     startTiming(){
         this.setState({
@@ -116,29 +122,41 @@ export default class Timer extends SoundPlay {
             this.setState({isPlaySound : true});
         }
     }
-    timesUp(abandoned){
-        let newHistory = {
-            titl: "default title",
-            lengt: this.state.targetTime + "min",
-            datee: moment().format('MMM Do').toString(),
-            isAbandoned: abandoned.toString(),
-        };
+    timesUp(){
+        let newHistory = new FormData();
+        newHistory.append("title",this.state.title === null?"专注就是妙":this.state.title);
+        newHistory.append("length",this.state.targetTime);
         DeviceEventEmitter.emit('flush', newHistory);
-        this.setState({isReady: true});
+        this.setState({isReady: true, modalVisible:false, selected:"0"});
     };
+    uncommonTimesUp(){
+        this.setState({isReady: true, modalVisible:false, selected:"0"});
+    }
     onValueChange(value: string){
         this.setState({
             selected: value,
-            targetTime: value,
+            targetTime: parseInt(value),
         });
     }
     render(){
+        let modalBackgroundStyle = {
+            backgroundColor: this.state.modalTransparent ? 'rgba(0, 0, 0, 0.5)' : '#ffffff',
+        };
+        let innerContainerTransparentStyle = this.state.modalTransparent ?
+            {backgroundColor: '#fff', padding: 20}
+            : null;
         return(
-            <Container>
+            <Container style={[{flexDirection:'column',justifyContent:'center'}]}>
                 {this.state.isReady ? (
-                    <Content>
-                        <Text>多长时间?</Text>
-                        <Text>预计时间:{this.state.targetTime}分钟</Text>
+                    <View style={[{flexDirection:'column',justifyContent:'center'}]}>
+                        <Label>专注项目名称：</Label>
+                        <Item rounded style={[{backgroundColor:'#fff'}]}>
+                            <Input multiline={false}
+                                   placeholder={'标题'}
+                                   onChangeText={(text) => this.setState({title:text})}
+                            />
+                        </Item>
+                        <Label>专注时长：</Label>
                         <Picker
                             mode="dropdown"
                             placeholder="Select one"
@@ -152,8 +170,8 @@ export default class Timer extends SoundPlay {
                             <Picker.Item label="30" value='30' />
                             <Picker.Item label="60" value='60' />
                         </Picker>
-                        <Button style={{flex:2}} rounded block disabled={this.state.targetTime === '0'} onPress={() => this.startTiming()}>
-                            <Text style={{color : '#e8ffe6'}}>开始</Text>
+                        <Button style={[{borderRadius:40,alignSelf:'center',marginTop:20}]} disabled={this.state.targetTime === '0'} onPress={() => this.startTiming()}>
+                            <Text>开始专注</Text>
                         </Button>
                         <RadioModal
                             selectedValue={this.state.initId}
@@ -162,15 +180,51 @@ export default class Timer extends SoundPlay {
                             <Text value='0'>播放白噪音</Text>
                             <Text value='1'>不播放白噪音</Text>
                         </RadioModal>
-                    </Content>
+                    </View>
                 ) : (
-
-                    <Content>
-                        <Tiktok isPlaySound = {this.state.isPlaySound} timee={parseInt(this.state.targetTime) * 60}/>
-                    </Content>
-
+                    <View>
+                        <View>
+                            <Modal
+                                animationType='fade'
+                                transparent={this.state.modalTransparent}
+                                visible={this.state.modalVisible}
+                                onRequestClose={() => {this.setModalVisible(false)}}
+                            >
+                                <View style={[styles.container, modalBackgroundStyle]}>
+                                    <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
+                                        <Text>确认放弃此次专注吗？</Text>
+                                        <Grid>
+                                            <Col style={[styles.gridStyle, {height:50}]}>
+                                                <Button transparent full
+                                                        onPress={() => this.uncommonTimesUp()}
+                                                        style={styles.buttonStyle}
+                                                >
+                                                    <Text style={[{color:'red'}]}>确认</Text>
+                                                </Button>
+                                            </Col>
+                                            <Col style={[styles.gridStyle, {height:50}]}>
+                                                <Button transparent full
+                                                        onPress={() => {
+                                                            this.setModalVisible(false);
+                                                            DeviceEventEmitter.emit('abandonCanceled');
+                                                        }}
+                                                        style={styles.buttonStyle}
+                                                >
+                                                    <Text>取消</Text>
+                                                </Button>
+                                            </Col>
+                                        </Grid>
+                                    </View>
+                                </View>
+                            </Modal>
+                        </View>
+                        <Tiktok
+                            isPlaySound = {this.state.isPlaySound}
+                            timee={parseInt(this.state.targetTime) * 60}
+                            onAbandon={() => this.setModalVisible(true)}
+                        />
+                    </View>
                 )}
-                <Text>Fuck!</Text>
             </Container>
         );
     }
@@ -185,4 +239,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize:17,
     },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    innerContainer: {
+        borderRadius: 10,
+        height:100,
+        alignItems: 'center',
+    },
+    gridStyle:{
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    buttonStyle:{
+        alignSelf:'center',
+    }
 });

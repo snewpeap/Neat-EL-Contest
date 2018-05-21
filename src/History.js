@@ -11,61 +11,70 @@ export default class History extends Component{
             historys:[],
         };
     }
-    componentWillMount(){
+    d1 = null;
+    componentDidMount(){
+        this.d1 = DeviceEventEmitter.addListener('flush',(newHistory) => {
+            if (isLogin) {
+                fetch(`${localURL}/historys/create/`, {
+                    method: 'POST',
+                    headers: {},
+                    body: newHistory,
+                    credentials: 'include',
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            response.json().then((json) => {
+                                alert(json.message);
+                            });
+                            this.onFlush();
+                        } else if (response.status === 500) {
+                            response.json().then((json) => alert(json.error));
+                        }
+                    })
+                    .catch((error) => {
+                        alert(error);
+                    });
+            }
+        });
         this.onFlush();
     }
-    componentDidMount(){
-        DeviceEventEmitter.addListener('flush',(newHistory) => {
-            fetch(localURL, {
-                method:'PUT',
-                headers:{
-                    Accept: 'application/json',
-                    'Content-Type':'application/json',
-                },
-                body:JSON.stringify({"history":newHistory}),
-            })
-                .then((success) => {
-                    alert(JSON.stringify({"history":newHistory}));
-                })
-                .catch((error) => {
-                    alert(error);
-                });
-        });
-    }
     componentWillUnmount(){
-        DeviceEventEmitter.remove();
+        this.d1.remove();
     };
-    onDelete(i){
-        let historyAfterDel = [];
-        for (let j = 0;j < this.state.historys.length;j++){
-            if (j !== i){
-                historyAfterDel.push(this.state.historys[j]);
-            }
-        }
-        historyAfterDel = {"history":historyAfterDel};
-        fetch(localURL,{
-            method:'PUT',
-            headers:{
-                Accept: 'application/json',
-            },
-            body:JSON.stringify(historyAfterDel),
+    onDelete(id){
+        fetch(`${localURL}/historys/${id}/remove/`,{
+            method:'GET',
+            credentials:'include',
         })
-            .then((success) => {
-                alert(JSON.stringify(historyAfterDel));
+            .then((response) => {
+                if (response.ok){
+                    this.onFlush();
+                    response.json().then((json) => {
+                        alert(json.message);
+                    })
+                } else if (response.status === 500) {
+                    response.json().then((json) => alert(json.error));
+                }
             })
             .catch((error) => {
                 alert(error);
             });
     }
     onFlush(){
-        fetch(localURL,{
+        fetch(`${localURL}/historys/get/`,{
             method:'GET',
+            credentials:'include',
         })
-            .then((response) => response.json())
-            .then((responseHistory) => {
-                this.setState({
-                    historys:responseHistory.history,
-                })
+            .then((response) => {
+                if (response.ok){
+                    response.json().then((responseHistory) => {
+                        this.setState({
+                            historys:responseHistory.history,
+                        })
+                    });
+                } else {
+                    response.json().then((json) => alert(json.error));
+                }
             })
             .catch((error) => {
                 alert(error);
@@ -77,11 +86,13 @@ export default class History extends Component{
                 <Content>
                 {Object.keys(this.state.historys).length !== 0?(
                     <View>{
-                        this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(i)}/>)
+                        this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
                     }
                     </View>
                 ):(
-                    <Text>Have no history.</Text>
+                    <View style={[{flex:1, alignItems:'center'}]}>
+                        <Text>你还没有专注历史</Text>
+                    </View>
                 )
                 }
                 </Content>

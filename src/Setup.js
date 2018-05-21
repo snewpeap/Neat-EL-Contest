@@ -1,23 +1,45 @@
 import React, { Component }from 'react';
 import Storage from 'react-native-storage';
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, DeviceEventEmitter} from 'react-native';
 import { StyleProvider } from 'native-base';
 import App from './App';
 import getTheme from "../native-base-theme/components"
 import variables from "../native-base-theme/variables/commonColor"
 
-let historyStorage = new Storage({
-    size: 1000,
+let storage = new Storage({
+    size: 100,
     storageBackend: AsyncStorage,
-    defaultExpires: null,
+    defaultExpires: 2592000000,
 });
 
 export default class Setup extends Component{
     constructor(props){
         super(props);
-        global.historyStorage = historyStorage;
+        global.storage = storage;
         global.isLogin = false;
-        global.localURL = "http://localhost:8081/Data.json";
+        global.localURL = "http://101.132.114.36:80";
+    }
+    componentDidMount(){
+        fetch(`${localURL}/signin/`,{
+            method:'GET',
+            credentials:'include',
+        })
+            .then((response) => {
+                if (response.ok){
+                    isLogin = true;
+                    response.json().then((json) => {
+                        alert(json.message);
+                        DeviceEventEmitter.emit('login');
+                    })
+                }else if (response.status === 500) {
+                    response.json().then((json) => alert(json.error));
+                }else if (response.status === 666) {
+                    response.json().then((json) => alert(json.message));
+                }
+            })
+            .catch((error) => {
+                alert(error);
+            })
     }
     render(){
         return (
