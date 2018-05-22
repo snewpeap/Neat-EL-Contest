@@ -7,10 +7,10 @@ import {
 import {TabBarBottom, TabNavigator} from 'react-navigation';
 import {DeviceEventEmitter} from 'react-native';
 import LoginPage from './LoginPage'
-import Social_wode from '../Social_wode'
-import Statistics from "../Statistics";
+import Social_wode from './Social_wode'
+import Statistics from "./Statistics";
 import History from "../History";
-import Social_quanzi from '../Social_quanzi'
+import Social_quanzi from './Social_quanzi'
 
 
 const Tab = TabNavigator(
@@ -88,18 +88,14 @@ class SocialPage extends Component{
     render(){
         return (
                     !isLogin?(
-                            <Container>
-                                <Content>
                             <LoginPage navigation={this.props.navigation}/>
-                            </Content>
-                        </Container>
                         ):(
                             <Container>
+                                <Tab/>
                             <Text>Welcome, {this.state.nickname}</Text>
                             <Button style={[{alignItems:'center'}]} onPress={() => this.logout()}>
                                 <Text>退出登录</Text>
                             </Button>
-                            <Tab/>
                             </Container>
                         )
         );

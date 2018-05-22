@@ -7,13 +7,10 @@ class TimerPage extends Component{
         super(props);
         this.state = {};
     }
+
     render(){
         return (
-            <Container>
-                <Content>
-                    <Timer/>
-                </Content>
-            </Container>
+            <Timer/>
         );
     }
 }

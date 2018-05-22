@@ -42,8 +42,8 @@ const Tab = TabNavigator(
     {
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'bottom',
-        lazy: false,
-        swipeEnabled: true,
+        lazy: true,
+        swipeEnabled: false,
         initialRouteName: 'TimerPage',
         tabBarOptions:{
             activeTintColor: 'white',

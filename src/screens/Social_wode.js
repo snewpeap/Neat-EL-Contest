@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Text} from "react-native";
-import Button from "../native-base-theme/components/Button";
-import View from "../native-base-theme/components/View";
+
 
 
 

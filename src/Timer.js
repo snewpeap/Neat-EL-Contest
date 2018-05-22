@@ -3,6 +3,7 @@ import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text,
 import {DeviceEventEmitter, Modal, StyleSheet,} from 'react-native';
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
+import BackgroundTimer from 'react-native-background-timer';
 
 
 
@@ -37,13 +38,13 @@ class Tiktok extends SoundPlay{
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
     }
     componentWillUnmount(){
-        countDown && clearInterval(countDown);
+        countDown && BackgroundTimer.clearInterval(countDown);
         this.d1.remove();
         this.stopSoundLooped();
     }
     tiktok(){
         this.state.isPlaySound ? this.playSoundLoop() :  {};
-        global.countDown = setInterval(() => {
+        global.countDown = BackgroundTimer.setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
                 this.setState({
@@ -57,7 +58,7 @@ class Tiktok extends SoundPlay{
         );
     };
     stopCountDown(){
-        clearInterval(countDown);
+        BackgroundTimer.clearInterval(countDown);
         this.stopSoundLooped();
     }
     onButtonClick=() => {
@@ -71,14 +72,20 @@ class Tiktok extends SoundPlay{
     };
     render(){
         return(
+                <View>
             <View style={[{alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
-                <Text textAlign='center' style={[{fontSize: 30, color:'#ff4000'}]}>{this.state.min} : {this.state.sec}</Text>
-                <Button block onPress={() => this.onButtonClick()}>
-                    <Text>{this.state.isPause? '继续':'暂停'}</Text>
+                <Button bordered style={{borderRadius:1000, width:300, height:300,}} disabled={true}>
+                <Text textAlign='center' style={[{fontSize: 66, color:'#3d2fff',fontWeight:'bold'}]}>  {this.state.min} : {this.state.sec}</Text>
                 </Button>
-                <Button block onPress={() => this.onAbandonButtonClick()}>
-                    <Text>放弃</Text>
+            </View>
+                    <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
+                <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
+                    <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>
                 </Button>
+                <Button style={{borderRadius:100,marginTop:50,width:100, height:100}} onPress={() => this.onAbandonButtonClick()}>
+                    <Text  style={[{fontSize : 30}]}>放弃</Text>
+                </Button>
+                    </View>
             </View>
         );
     }
@@ -168,17 +175,17 @@ export default class Timer extends SoundPlay {
             {backgroundColor: '#fff', padding: 20}
             : null;
         return(
-            <Container style={[{flexDirection:'column',justifyContent:'center'}]}>
+            <Container style={[{flexDirection:'column',marginTop:10}]}>
                 {this.state.isReady ? (
-                    <View style={[{flexDirection:'column',justifyContent:'center'}]}>
-                        <Label>专注项目名称：</Label>
+                    <View style={[{flexDirection:'column'}]}>
+                        <Label style={{color:'#000000'}}>专注项目名称：</Label>
                         <Item rounded style={[{backgroundColor:'#fff'}]}>
                             <Input multiline={false}
-                                   placeholder={'标题'}
+                                   placeholder={'事件'}
                                    onChangeText={(text) => this.setState({title:text})}
                             />
                         </Item>
-                        <Label>专注时长：</Label>
+                        <Label style={{color:'#000000'}}>专注时长：</Label>
                         <Picker
                             mode="dropdown"
                             placeholder="Select one"
@@ -192,7 +199,7 @@ export default class Timer extends SoundPlay {
                             <Picker.Item label="30" value='30' />
                             <Picker.Item label="60" value='60' />
                         </Picker>
-                        <Button style={[{borderRadius:40,alignSelf:'center',marginTop:20}]} disabled={this.state.targetTime === '0'} onPress={() => this.startTiming()}>
+                        <Button block style={[{borderRadius:40,marginTop:8}]} disabled={this.state.targetTime === '0'} onPress={() => this.startTiming()}>
                             <Text>开始专注</Text>
                         </Button>
                         <RadioModal
