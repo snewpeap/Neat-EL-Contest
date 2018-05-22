@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const Sound = require('react-native-sound');
+import Sound from 'react-native-sound';
 
 class SoundPlay extends Component{
 

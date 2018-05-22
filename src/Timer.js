@@ -42,7 +42,7 @@ class Tiktok extends SoundPlay{
         this.stopSoundLooped();
     }
     tiktok(){
-        this.state.isPlaySound ? this.playSoundLoop() :  {};
+        this.state.isPlaySound ? this.playSoundLoop():null;
         global.countDown = setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
