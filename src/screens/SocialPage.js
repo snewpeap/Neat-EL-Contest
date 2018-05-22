@@ -56,20 +56,34 @@ class SocialPage extends Component{
             nickname:null,
         };
     }
+    d1 = null;d2 = null;
     componentDidMount(){
-        DeviceEventEmitter.addListener('login',(values) => {
-            isLogin = true;
-            this.setState({
-                nickname:values.user,
-            })
+        this.d1 = DeviceEventEmitter.addListener('login',() => {
+            this.forceUpdate();
         });
+        this.d2 = DeviceEventEmitter.addListener('logout',() => {
+            this.forceUpdate();
+        })
     }
     logout(){
-        isLogin = false;
-        this.forceUpdate();
+        fetch(`${localURL}/signout/`,{
+            method:'GET',
+            credentials:'include',
+        })
+            .then((response) => {
+                if (response.ok) {
+                    isLogin = false;
+                    DeviceEventEmitter.emit('logout');
+                }else {
+                    response.json().then((json) => alert(json.error));
+                }
+            })
+            .catch((error) => {
+                alert(error);
+            });
     }
     componentWillUnmount(){
-        DeviceEventEmitter.remove();
+        this.d1.remove();this.d2.remove();
     }
     render(){
         return (

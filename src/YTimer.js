@@ -1,23 +1,15 @@
 import React,{Component} from 'react';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text, View} from "native-base";
-import {DeviceEventEmitter, Modal, StyleSheet,} from 'react-native';
-import SoundPlay from './SoundPlay';
-import RadioModal from 'react-native-radio-master';
-import BackgroundTimer from 'react-native-background-timer';
+import {DeviceEventEmitter, Modal, StyleSheet} from 'react-native';
 
-
-
-class Tiktok extends SoundPlay{
+class Tiktok extends Component{
     constructor(props){
         super(props);
-        let isPlaySound = this.props.isPlaySound;
         this.state = {
             timee: this.props.timee,
             min:Tiktok.formatter(this.props.timee / 60),
             sec:Tiktok.formatter(this.props.timee % 60),
             isPause:false,
-            choose : this.props.choose,
-            isPlaySound:isPlaySound
         };
     }
     d1 = null;
@@ -38,36 +30,30 @@ class Tiktok extends SoundPlay{
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
     }
     componentWillUnmount(){
-        countDown && BackgroundTimer.clearInterval(countDown);
+        countDown && clearInterval(countDown);
         this.d1.remove();
-        this.stopSoundLooped();
     }
     tiktok(){
-        this.state.isPlaySound ? this.playSoundLoop() :  {};
-        global.countDown = BackgroundTimer.setInterval(() => {
+        global.countDown = setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
                 this.setState({
                     timee:this.state.timee - 1,
-                    min:Tiktok.formatter(Math.trunc((time - 1) / 60)),
+                    min:Tiktok.formatter((time - 1) / 60),
                     sec:Tiktok.formatter((time - 1) % 60),
                 });
             }else{
-                this.endCount(false);
-            }}, 1000
+                this.endCount();
+            }}, 50
         );
-    };
-    stopCountDown(){
-        BackgroundTimer.clearInterval(countDown);
-        this.stopSoundLooped();
     }
     onButtonClick=() => {
-        this.state.isPause?this.tiktok():this.stopCountDown();
+        this.state.isPause?this.tiktok():clearInterval(countDown);
         this.setState({isPause:!this.state.isPause});
     };
     onAbandonButtonClick=() => {
-        this.stopCountDown();
-        this.setState({isPause:true,isPlaySound:false});
+        clearInterval(countDown);
+        this.setState({isPause:true});
         this.props.onAbandon();
     };
     render(){
@@ -85,9 +71,7 @@ class Tiktok extends SoundPlay{
     }
 }
 
-
-
-export default class Timer extends SoundPlay {
+export default class YTimer extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -97,7 +81,6 @@ export default class Timer extends SoundPlay {
             selected: undefined,
             modalTransparent: true,
             modalVisible:false,
-            isPlaySound : false,
         };
     }
     l2 = null;
@@ -115,42 +98,12 @@ export default class Timer extends SoundPlay {
             isReady: false,
         });
     };
-    selected(item){
-        if(item.initItem === '不播放白噪音'){
-            this.setState({isPlaySound : false});
-        }else if(item.initItem === '林间之声'){
-            this.setState({
-                isPlaySound : true,
-                choose : 0
-            });
-        }else if(item.initItem === '海洋波潮'){
-            this.setState({
-                isPlaySound : true,
-                choose : 1
-            });
-        }else if(item.initItem === '淅淅夏雨'){
-            this.setState({
-                isPlaySound : true,
-                choose : 2
-            });
-        }else if(item.initItem === '山谷蛙鸣'){
-            this.setState({
-                isPlaySound : true,
-                choose : 3
-            });
-        }else if(item.initItem === '潺潺泉涌'){
-            this.setState({
-                isPlaySound : true,
-                choose : 4
-            });
-        }
-    }
     timesUp(){
         let newHistory = new FormData();
         newHistory.append("title",this.state.title === null?"专注就是妙":this.state.title);
         newHistory.append("length",this.state.targetTime);
         DeviceEventEmitter.emit('flush', newHistory);
-        this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false});
+        this.setState({isReady: true, modalVisible:false, selected:"0"});
     };
     uncommonTimesUp(){
         this.setState({isReady: true, modalVisible:false, selected:"0"});
@@ -185,6 +138,7 @@ export default class Timer extends SoundPlay {
                             placeholder="Select one"
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}
+                            style={[{width: 200,alignSelf:'center'}]}
                         >
                             <Picker.Item disabled label='Select one' value='0'/>
                             <Picker.Item label="1" value='1' />
@@ -196,17 +150,6 @@ export default class Timer extends SoundPlay {
                         <Button style={[{borderRadius:40,alignSelf:'center',marginTop:20}]} disabled={this.state.targetTime === '0'} onPress={() => this.startTiming()}>
                             <Text>开始专注</Text>
                         </Button>
-                        <RadioModal
-                            selectedValue={this.state.initId}
-                            onValueChange={(id,item)=>this.selected({initItem : item})}
-                        >
-                            <Text value='0'>不播放白噪音</Text>
-                            <Text value='1'>林间之声</Text>
-                            <Text value='2'>海洋波潮</Text>
-                            <Text value='3'>淅淅夏雨</Text>
-                            <Text value='4'>山谷蛙鸣</Text>
-                            <Text value='5'>潺潺泉涌</Text>
-                        </RadioModal>
                     </View>
                 ) : (
                     <View>
@@ -245,28 +188,15 @@ export default class Timer extends SoundPlay {
                                 </View>
                             </Modal>
                         </View>
-                        <Tiktok
-                            isPlaySound = {this.state.isPlaySound}
-                            choose = {this.state.choose}
-                            timee={parseInt(this.state.targetTime) * 60}
-                            onAbandon={() => this.setModalVisible(true)}
-                        />
+                        <Tiktok timee={parseInt(this.state.targetTime) * 60} onAbandon={() => this.setModalVisible(true)}/>
                     </View>
                 )}
             </Container>
         );
     }
 }
+
 const styles = StyleSheet.create({
-    image: {
-        flex: 1,
-        paddingBottom:50,
-    },
-    buttonText : {
-        color:'#463cff',
-        fontWeight: 'bold',
-        fontSize:17,
-    },
     container: {
         flex: 1,
         justifyContent: 'center',

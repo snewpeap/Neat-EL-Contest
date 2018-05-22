@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
+    Button,
     Container,
-    Content,
-    } from 'native-base';
-import {TabBarBottom, TabNavigator} from 'react-navigation';
-import {Text} from "react-native";
+    Content, Text, View,
+} from 'native-base';
+import {DeviceEventEmitter,TabBarBottom, TabNavigator} from 'react-native';
 import History from '../History';
 import Statistics from '../Statistics';
 import RegisterPage from "./registerPage";
@@ -52,6 +52,18 @@ class HistoryPage extends Component{
     constructor(props){
         super(props);
         this.state = {};
+    }
+    d1 = null;d2 = null;
+    componentDidMount(){
+        this.d1 = DeviceEventEmitter.addListener('login',() => {
+            this.forceUpdate();
+        });
+        this.d2 = DeviceEventEmitter.addListener('logout',() => {
+            this.forceUpdate();
+        })
+    }
+    componentWillUnmount(){
+        this.d1.remove();this.d2.remove();
     }
     render(){
         return (

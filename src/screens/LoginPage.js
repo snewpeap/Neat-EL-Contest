@@ -5,7 +5,6 @@ import {Button, Container, Content, Form, Header, Input, Item, Label, Text} from
 String.prototype.trim=function(){
     return this.replace(/(^\s*)|(\s*$)/g, "");
 };
-const lengthLimitation = 5;
 
 export default class LoginPage extends Component{
     constructor(props){
@@ -23,26 +22,29 @@ export default class LoginPage extends Component{
                 isError:true,
                 tips:`${emitter}不能为空!`,
             });
-        }else if (text.toString().length < lengthLimitation){
-            this.setState({
-                isError:true,
-                tips:`${emitter}不少于${lengthLimitation}个字符!`,
-            });
-        }else {}
+        }
     }
     onLoginButtonClick(){
-        fetch(localURL,{
-            method:'GET',
+        let userData = new FormData();
+        userData.append("name",this.state.username);
+        userData.append("password",this.state.password);
+        fetch(`${localURL}/signin/`,{
+            method:'POST',
+            headers:{'Content-Type':'multipart/form-data',},
+            body:userData,
+            credentials:'include',
         })
-            .then((response) => response.json())
-            .then((responseHistory) => {
-                if (responseHistory.user.username === this.state.username && responseHistory.user.password === this.state.password){
-                    DeviceEventEmitter.emit('login',{user:responseHistory.user.nickname})
-                } else{
-                    this.setState({
-                        isError:true,
-                        tips:`用户名或密码错误`,
-                    });
+            .then((response) => {
+                if (response.ok){
+                    isLogin = true;
+                    response.json().then((json) => {
+                        alert(json.message);
+                        DeviceEventEmitter.emit('login');
+                    })
+                }else if (response.status === 500) {
+                    response.json().then((json) => alert(json.error));
+                }else if (response.status === 666) {
+                    response.json().then((json) => alert(json.message));
                 }
             })
             .catch((error) => {

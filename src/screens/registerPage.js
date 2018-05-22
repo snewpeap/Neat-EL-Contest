@@ -25,6 +25,7 @@ export default class RegisterPage extends Component{
             isAbleToCommit:false,
         };
     }
+
     check(emitter:string){
         switch (emitter){
             case 'username':
@@ -32,7 +33,7 @@ export default class RegisterPage extends Component{
                     expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
-                        {usernameIsOK:(!(this.isBlank(this.state.username)||this.usernameFormatCheck()))}
+                        {usernameIsOK:(this.usernameFormatCheck())}
                         )
                 });
                 break;
@@ -40,7 +41,7 @@ export default class RegisterPage extends Component{
                 this.setState({expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
-                        {passwordIsOK:(!(this.isBlank(this.state.password)||this.passwordFormatCheck()))}
+                        {passwordIsOK:(this.passwordFormatCheck())}
                     )
                 });
                 break;
@@ -48,7 +49,7 @@ export default class RegisterPage extends Component{
                 this.setState({expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
-                        {passwordIsConfirm:(!(this.isBlank(this.state.passwordAgain)||this.state.password != this.state.passwordAgain))}
+                        {passwordIsConfirm:(this.state.password == this.state.passwordAgain)}
                     )
                 });
                 break;
@@ -71,19 +72,52 @@ export default class RegisterPage extends Component{
         });
         if (flag) {this.setState({isAbleToCommit:true});}
     }
+
     isBlank(str:String){
         return str == null || typeof str === "undefined" || str == "" || str.trim() == " ";
     }
+
     usernameFormatCheck(){
         const pattern = /^[A-z]{5,20}$/;
-        this.setState({tip1:pattern.test(this.state.username)?null:'用户名不符合格式：纯英文字母！'});
-        return !pattern.test(this.state.username);
+        this.setState({tip1:(pattern.test(this.state.username) && !this.isBlank(this.state.username))?null:'用户名不符合格式'});
+        return pattern.test(this.state.username)&&!this.isBlank(this.state.username);
     }
+
     passwordFormatCheck(){
         const pattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
-        this.setState({tip2:pattern.test(this.state.password)?null:'密码不符合格式:至少一个大写字母、一个小写字母、一个数字！'});
-        return !pattern.test(this.state.password);
+        this.setState({tip2:(pattern.test(this.state.password) && !this.isBlank(this.state.password))?null:'密码不符合格式'});
+        return pattern.test(this.state.password)&&!this.isBlank(this.state.password);
     }
+
+    request(){
+        let userDate = new FormData();
+        userDate.append("username",this.state.username);
+        userDate.append("password",this.state.password);
+        userDate.append("nickname",this.state.nickname);
+        fetch(`${localURL}/signup/`,{
+            method:'POST',
+            headers:{'Content-Type':'multipart/form-data'},
+            body:userDate,
+        })
+            .then((response) => {
+                if (response.ok){
+                    this.props.navigation.state.params.callback({
+                        username:this.state.username,
+                        password:this.state.password,
+                    });
+                    this.props.navigation.goBack();
+                    return response.json();
+                }
+            })
+            .then((json) => {
+                alert(JSON.stringify(json.message));
+            })
+            .catch((error) => {
+                alert(error);
+            })
+
+    }
+
     render(){
         return(
             <Container>
@@ -126,7 +160,9 @@ export default class RegisterPage extends Component{
                                onSubmitEditing={() => this.check('again')}
                                style={styles.textAreaStyle}/>
                     </Item>
-                    {this.state.expectCorrect.passwordIsConfirm?null:<Text style={[{color:'red'}]}>两次输入的密码不同！</Text>}
+                    {!this.state.expectCorrect.passwordIsOK || this.state.expectCorrect.passwordIsConfirm
+                        ? null: <Text style={[{color:'red'}]}>两次输入的密码不同！</Text>
+                    }
                     <Item regular style={styles.itemStyle}>
                         <Label style={styles.font}>昵称:</Label>
                         <Input multiline={false}
@@ -141,14 +177,7 @@ export default class RegisterPage extends Component{
                     <Button block
                             disabled={!this.state.isAbleToCommit}
                             style={[{margin:5}]}
-                            onPress={() => {
-                                this.props.navigation.state.params.callback({
-                                    username:this.state.username,
-                                    password:this.state.password,
-                                    nickname:this.state.nickname,
-                                });
-                                this.props.navigation.goBack();
-                            }}>
+                            onPress={() => {this.request()}}>
                         <Text>提交注册</Text>
                     </Button>
                 </Content>
