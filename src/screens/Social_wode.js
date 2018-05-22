@@ -30,7 +30,7 @@ export default class Social_wode extends Component{
     render(){
         return(
             <View>
-                <Text>Welcome, {this.state.nickname}</Text>
+                <Text>Welcome, {nickname}</Text>
                 <Button style={[{alignItems:'center'}]} onPress={() => this.logout()}>
                     <Text>退出登录</Text>
                 </Button>

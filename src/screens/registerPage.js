@@ -121,6 +121,9 @@ export default class RegisterPage extends Component{
     render(){
         return(
             <Container>
+                <Header style={{height:35}}>
+                    <Text style={{fontSize:24,color : '#fdffff'}}>注册</Text>
+                </Header>
                 <Content>
                     <Item regular style={styles.itemStyle}>
                         <Label style={styles.font}>用户名:</Label>

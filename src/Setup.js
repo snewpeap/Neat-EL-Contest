@@ -1,5 +1,5 @@
 import React, { Component }from 'react';
-import {DeviceEventEmitter} from 'react-native';
+import {DeviceEventEmitter, BackHandler, ToastAndroid} from 'react-native';
 import { StyleProvider } from 'native-base';
 import App from './App';
 import getTheme from "../native-base-theme/components"
@@ -10,7 +10,7 @@ export default class Setup extends Component{
     constructor(props){
         super(props);
         global.isLogin = false;
-        global.localURL = "http://192.168.2.205:80";
+        global.localURL = "http://101.132.114.36:80";
         global.userId = null;
         global.nickname = null;
     }
@@ -39,6 +39,23 @@ export default class Setup extends Component{
             });
         SplashScreen.hide();
     }
+
+    componentWillMount(){
+        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+    }
+
+    onBackAndroid = () => {
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            return false;
+        }
+        this.lastBackPressed = Date.now();
+        ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+        return true;
+    };
 
     render(){
         return (

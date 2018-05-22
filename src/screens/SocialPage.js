@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-    Container,
-    Content, Text, } from 'native-base';
+import {Container, Content, Text, } from 'native-base';
 import {TabBarBottom, TabNavigator} from 'react-navigation';
 import {DeviceEventEmitter} from 'react-native';
 import LoginPage from './LoginPage'
