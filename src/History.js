@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Content, Text, View} from "native-base";
+import {Button, Container, Content, Text, View} from "native-base";
 import HistoryItem from './HistoryItem';
 import {DeviceEventEmitter} from 'react-native';
 
@@ -11,7 +11,7 @@ export default class History extends Component{
             historys:[],
         };
     }
-    d1 = null;
+    d1 = null;d2 = null;
     componentDidMount(){
         this.d1 = DeviceEventEmitter.addListener('flush',(newHistory) => {
             if (isLogin) {
@@ -36,10 +36,14 @@ export default class History extends Component{
                     });
             }
         });
+        this.d2 = DeviceEventEmitter.addListener("login",() => this.onFlush());
+        this.d3 = DeviceEventEmitter.addListener("logout",() => this.forceUpdate());
         this.onFlush();
     }
     componentWillUnmount(){
         this.d1.remove();
+        this.d2.remove();
+        this.d3.remove();
     };
     onDelete(id){
         fetch(`${localURL}/historys/${id}/remove/`,{
@@ -84,16 +88,33 @@ export default class History extends Component{
         return(
             <Container>
                 <Content>
-                {Object.keys(this.state.historys).length !== 0?(
-                    <View>{
-                        this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
-                    }
-                    </View>
-                ):(
-                    <View style={[{flex:1, alignItems:'center'}]}>
-                        <Text>你还没有专注历史</Text>
-                    </View>
-                )
+                    {isLogin? (Object.keys(this.state.historys).length !== 0?(
+                        <View>
+                            {
+                                this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
+                            }
+                            </View>
+                        ):(
+                            <View style={[{flex:1, alignItems:'center'}]}>
+                                <Text>你还没有专注历史</Text>
+                            </View>
+                            )
+                        ):(
+                            <Container>
+                                <Content>
+                                    {isLogin?
+                                        <History/>:
+                                        <View>
+                                            <Text>你还没有登陆</Text>
+                                            <Text>不登陆你能变强吗？</Text>
+                                            <Button onPress={() => this.props.navigation.navigate('SocialPage')}>
+                                                <Text>去登陆</Text>
+                                            </Button>
+                                        </View>
+                                    }
+                                    </Content>
+                            </Container>
+                    )
                 }
                 </Content>
             </Container>

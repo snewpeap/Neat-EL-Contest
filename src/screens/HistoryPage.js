@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
-import {
-    Button,
-    Container,
-    Content, Text, View,
-} from 'native-base';
+import {Button, Container, Content, Text, View,} from 'native-base';
 import {DeviceEventEmitter} from 'react-native';
-import {TabBarBottom, TabNavigator} from 'react-navigation'
+import {TabBarBottom, TabNavigator} from 'react-navigation';
 import History from '../History';
 import Statistics from './Statistics';
-import RegisterPage from "./registerPage";
-import LoginPage from "./LoginPage";
 
 
 const Tab = TabNavigator(

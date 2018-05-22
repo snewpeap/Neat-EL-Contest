@@ -39,6 +39,8 @@ export default class LoginPage extends Component{
                     isLogin = true;
                     response.json().then((json) => {
                         alert(json.message);
+                        userId = json.userData.id;
+                        nickname = json.userData.nickname;
                         DeviceEventEmitter.emit('login');
                     })
                 }else if (response.status === 500) {

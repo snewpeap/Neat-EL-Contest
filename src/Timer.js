@@ -53,7 +53,7 @@ class Tiktok extends SoundPlay{
                     sec:Tiktok.formatter((time - 1) % 60),
                 });
             }else{
-                this.endCount(false);
+                this.endCount();
             }}, 1000
         );
     };
@@ -72,6 +72,7 @@ class Tiktok extends SoundPlay{
     };
     render(){
         return(
+<<<<<<< HEAD
                 <View>
                     <View style={[{marginTop:70,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
                 <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min} : {this.state.sec}</Text>
@@ -84,6 +85,22 @@ class Tiktok extends SoundPlay{
                     <Text  style={[{fontSize : 30}]}>放弃</Text>
                 </Button>
                     </View>
+=======
+            <View>
+                <View style={[{alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
+                    <Button bordered style={{borderRadius:1000, width:300, height:300,}} disabled={true}>
+                        <Text textAlign='center' style={[{fontSize: 66, color:'#3d2fff',fontWeight:'bold'}]}>  {this.state.min} : {this.state.sec}</Text>
+                    </Button>
+                </View>
+                <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
+                    <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
+                        <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>
+                    </Button>
+                    <Button style={{borderRadius:100,marginTop:50,width:100, height:100}} onPress={() => this.onAbandonButtonClick()}>
+                        <Text  style={[{fontSize : 30}]}>放弃</Text>
+                    </Button>
+                </View>
+>>>>>>> remotes/origin/alpha
             </View>
         );
     }

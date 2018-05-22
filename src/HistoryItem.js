@@ -13,7 +13,7 @@ export default class HistoryItem extends Component{
                     <Body>
                     <Text>任务名称：{this.props.detail.title}</Text>
                     <Text>专注时长：{this.props.detail.length} 分钟</Text>
-                    <Text>日期：{moment(this.props.detail.create_at).format('YYYY-MM-DD')}</Text>
+                    <Text>日期：{moment(this.props.detail.date).format('YYYY-MM-DD')}</Text>
                     </Body>
                 </CardItem>
                 <CardItem footer button onPress={() => this.onDelete()}>
