@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {DeviceEventEmitter} from 'react-native';
-import {Button, Container, Content, Form, Input, Item, Label, Text} from "native-base";
+import {Button, Container, Content, Form, Header, Input, Item, Label, Text} from "native-base";
 
 String.prototype.trim=function(){
     return this.replace(/(^\s*)|(\s*$)/g, "");

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Container, Content, Input, Item, Label, Text} from "native-base";
+import {Button, Container, Content, Header, Input, Item, Label, Text} from "native-base";
 
 String.prototype.trim=function(){
     return this.replace(/(^\s*)|(\s*$)/g, "");
@@ -87,6 +87,9 @@ export default class RegisterPage extends Component{
     render(){
         return(
             <Container>
+                <Header>
+                    <Text style={{fontSize:34,fontWeight : 'bold'}}>注册</Text>
+                </Header>
                 <Content>
                     <Item regular style={styles.itemStyle}>
                         <Label style={styles.font}>用户名:</Label>

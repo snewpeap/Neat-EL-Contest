@@ -4,6 +4,7 @@ import {DeviceEventEmitter, StyleSheet,} from 'react-native';
 import moment from "moment";
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
+import BackgroundTimer from 'react-native-background-timer';
 
 
 
@@ -35,12 +36,13 @@ class Tiktok extends SoundPlay{
         this.tiktok();
     }
     componentWillUnmount(){
-        countDown && clearInterval(countDown);
+        countDown && BackgroundTimer.clearInterval(countDown);
         this.stopSoundLooped();
     }
     tiktok(){
         this.state.isPlaySound ? this.playSoundLoop() :  {};
-        global.countDown = setInterval(() => {
+       // global.countDown = setInterval(() => {
+        global.countDown = BackgroundTimer.setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
                 this.setState({
@@ -54,7 +56,7 @@ class Tiktok extends SoundPlay{
         );
     };
     stopCountDown(){
-        clearInterval(countDown);
+        BackgroundTimer.clearInterval(countDown);
         this.stopSoundLooped();
     }
     onButtonClick=() => {

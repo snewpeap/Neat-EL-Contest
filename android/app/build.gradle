@@ -126,7 +126,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            
+
 
         }
     }
@@ -151,6 +151,7 @@ dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-sound')
     compile project(':react-native-splash-screen')
+    compile project(path: ':react-native-background-timer')
 }
 
 // Run this once to be able to run the application with BUCK
