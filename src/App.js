@@ -7,6 +7,7 @@ import SocialPage from "./screens/SocialPage";
 import RegisterPage from './screens/registerPage';
 import LoginPage from "./screens/LoginPage";
 
+
 const Tab = TabNavigator(
     {
         HistoryPage:{
@@ -14,7 +15,7 @@ const Tab = TabNavigator(
             navigationOptions:{
                 tabBarLabel: 'History',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'paper' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'paper' style={{color: focused?'white':'#3d2fff'}}/>
                 )
             },
         },
@@ -23,7 +24,7 @@ const Tab = TabNavigator(
             navigationOptions:{
                 tabBarLabel: 'Timer',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'alarm' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'alarm' style={{color: focused?'white':'#3d2fff'}}/>
                 )
             },
         },
@@ -32,7 +33,7 @@ const Tab = TabNavigator(
             navigationOptions:{
                 tabBarLabel: 'Social',
                 tabBarIcon: ({focused}) => (
-                    <Icon name = 'person' style={{color: focused?'white':'#ddaa99'}}/>
+                    <Icon name = 'person' style={{color: focused?'white':'#3d2fff'}}/>
                 )
             },
         },
@@ -46,9 +47,9 @@ const Tab = TabNavigator(
         initialRouteName: 'TimerPage',
         tabBarOptions:{
             activeTintColor: 'white',
-            inactiveTintColor: '#ddaa99',
+            inactiveTintColor: '#3d2fff',
             style:{
-                backgroundColor: '#ff4000',
+                backgroundColor: '#1d1150',
             },
         }
     },
@@ -79,6 +80,7 @@ const Nav = StackNavigator(
 );
 
 export default class App extends Component{
+
     render(){
         return(
             <Root>

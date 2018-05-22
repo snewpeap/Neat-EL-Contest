@@ -9,14 +9,13 @@ import RadioModal from 'react-native-radio-master';
 class Tiktok extends SoundPlay{
     constructor(props){
         super(props);
-        let choose =  Math.random() * 5 | 0;
         let isPlaySound = this.props.isPlaySound;
         this.state = {
             timee: this.props.timee,
             min:Tiktok.formatter(this.props.timee / 60),
             sec:Tiktok.formatter(this.props.timee % 60),
             isPause:false,
-            choose: choose,
+            choose : this.props.choose,
             isPlaySound:isPlaySound
         };
     }
@@ -67,7 +66,7 @@ class Tiktok extends SoundPlay{
     };
     onAbandonButtonClick=() => {
         this.stopCountDown();
-        this.setState({isPause:true});
+        this.setState({isPause:true,isPlaySound:false});
         this.props.onAbandon();
     };
     render(){
@@ -94,10 +93,10 @@ export default class Timer extends SoundPlay {
             targetTime: "0",
             title:null,
             isReady: true,
-            isPlaySound: true,
             selected: undefined,
             modalTransparent: true,
             modalVisible:false,
+            isPlaySound : false,
         };
     }
     l2 = null;
@@ -118,8 +117,31 @@ export default class Timer extends SoundPlay {
     selected(item){
         if(item.initItem === '不播放白噪音'){
             this.setState({isPlaySound : false});
-        }else{
-            this.setState({isPlaySound : true});
+        }else if(item.initItem === '林间之声'){
+            this.setState({
+                isPlaySound : true,
+                choose : 0
+            });
+        }else if(item.initItem === '海洋波潮'){
+            this.setState({
+                isPlaySound : true,
+                choose : 1
+            });
+        }else if(item.initItem === '淅淅夏雨'){
+            this.setState({
+                isPlaySound : true,
+                choose : 2
+            });
+        }else if(item.initItem === '山谷蛙鸣'){
+            this.setState({
+                isPlaySound : true,
+                choose : 3
+            });
+        }else if(item.initItem === '潺潺泉涌'){
+            this.setState({
+                isPlaySound : true,
+                choose : 4
+            });
         }
     }
     timesUp(){
@@ -127,7 +149,7 @@ export default class Timer extends SoundPlay {
         newHistory.append("title",this.state.title === null?"专注就是妙":this.state.title);
         newHistory.append("length",this.state.targetTime);
         DeviceEventEmitter.emit('flush', newHistory);
-        this.setState({isReady: true, modalVisible:false, selected:"0"});
+        this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false});
     };
     uncommonTimesUp(){
         this.setState({isReady: true, modalVisible:false, selected:"0"});
@@ -177,8 +199,12 @@ export default class Timer extends SoundPlay {
                             selectedValue={this.state.initId}
                             onValueChange={(id,item)=>this.selected({initItem : item})}
                         >
-                            <Text value='0'>播放白噪音</Text>
-                            <Text value='1'>不播放白噪音</Text>
+                            <Text value='0'>不播放白噪音</Text>
+                            <Text value='1'>林间之声</Text>
+                            <Text value='2'>海洋波潮</Text>
+                            <Text value='3'>淅淅夏雨</Text>
+                            <Text value='4'>山谷蛙鸣</Text>
+                            <Text value='5'>潺潺泉涌</Text>
                         </RadioModal>
                     </View>
                 ) : (
@@ -220,6 +246,7 @@ export default class Timer extends SoundPlay {
                         </View>
                         <Tiktok
                             isPlaySound = {this.state.isPlaySound}
+                            choose = {this.state.choose}
                             timee={parseInt(this.state.targetTime) * 60}
                             onAbandon={() => this.setModalVisible(true)}
                         />

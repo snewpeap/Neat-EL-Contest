@@ -51,7 +51,7 @@
 		1C8D5B44E59842F5A47C3528 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EDFD344108147CDBB47F216 /* Zocial.ttf */; };
 		5BDF0F8844734BBEBE03BF47 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB20D86CBA94AF9A2CE3BC3 /* libRNSound.a */; };
 		693ACF9481984590B641FF29 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A8F54F914B54930B19DD0D5 /* libRNBlur.a */; };
-		CF0A03A7B7244E4B9FB27DD2 /* libRNBackgroundJob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8FEB4C788754FB6B83BBD1D /* libRNBackgroundJob.a */; };
+		4AAAE999E50D4E2583708AEA /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E9B32FA8A594F2EA2998114 /* libSplashScreen.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -373,8 +373,8 @@
 		BCB20D86CBA94AF9A2CE3BC3 /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		803520C1ACFE4D6085BF53C7 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; name = "RNBlur.xcodeproj"; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		2A8F54F914B54930B19DD0D5 /* libRNBlur.a */ = {isa = PBXFileReference; name = "libRNBlur.a"; path = "libRNBlur.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		91ACFE7BB97842978D8A0608 /* RNBackgroundJob.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundJob.xcodeproj"; path = "../node_modules/react-native-background-job/ios/RNBackgroundJob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		B8FEB4C788754FB6B83BBD1D /* libRNBackgroundJob.a */ = {isa = PBXFileReference; name = "libRNBackgroundJob.a"; path = "libRNBackgroundJob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		F946045A6B904C76BE1256EF /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0E9B32FA8A594F2EA2998114 /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,7 +405,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				5BDF0F8844734BBEBE03BF47 /* libRNSound.a in Frameworks */,
 				693ACF9481984590B641FF29 /* libRNBlur.a in Frameworks */,
-				CF0A03A7B7244E4B9FB27DD2 /* libRNBackgroundJob.a in Frameworks */,
+				4AAAE999E50D4E2583708AEA /* libSplashScreen.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,7 +594,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				8FDF853FEB154A8F8E653986 /* RNSound.xcodeproj */,
 				803520C1ACFE4D6085BF53C7 /* RNBlur.xcodeproj */,
-				91ACFE7BB97842978D8A0608 /* RNBackgroundJob.xcodeproj */,
+				F946045A6B904C76BE1256EF /* SplashScreen.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1262,7 +1262,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1291,7 +1291,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1315,7 +1315,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1338,7 +1338,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1376,7 +1376,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1414,7 +1414,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1451,7 +1451,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1488,7 +1488,7 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-blur\ios",
-					"$(SRCROOT)\..\node_modules\react-native-background-job\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;

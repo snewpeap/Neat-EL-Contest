@@ -5,6 +5,8 @@ import { StyleProvider } from 'native-base';
 import App from './App';
 import getTheme from "../native-base-theme/components"
 import variables from "../native-base-theme/variables/commonColor"
+import SplashScreen from "react-native-splash-screen";
+
 
 let storage = new Storage({
     size: 100,
@@ -13,6 +15,9 @@ let storage = new Storage({
 });
 
 export default class Setup extends Component{
+    componentDidMount() {
+        SplashScreen.hide();
+    }
     constructor(props){
         super(props);
         global.storage = storage;
@@ -41,6 +46,8 @@ export default class Setup extends Component{
                 alert(error);
             })
     }
+
+
     render(){
         return (
             <StyleProvider style = {getTheme(variables)}>

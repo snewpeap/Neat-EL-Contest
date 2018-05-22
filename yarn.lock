@@ -4508,6 +4508,10 @@ react-native-sound@^0.10.9:
   version "0.10.9"
   resolved "http://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.10.9.tgz#6b00b0f4afd017cde09fbb9d171df1b5d5b851a8"
 
+react-native-splash-screen@^3.0.6:
+  version "3.0.6"
+  resolved "http://registry.npm.taobao.org/react-native-splash-screen/download/react-native-splash-screen-3.0.6.tgz#c0bbf2c8ae40a313c4c7044f55e569414ff68332"
+
 react-native-storage@^0.2.2:
   version "0.2.2"
   resolved "http://registry.npm.taobao.org/react-native-storage/download/react-native-storage-0.2.2.tgz#4449197f122b2da0650e3704e1f050260ed58d9f"
