@@ -73,11 +73,9 @@ class Tiktok extends SoundPlay{
     render(){
         return(
                 <View>
-            <View style={[{alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
-                <Button bordered style={{borderRadius:1000, width:300, height:300,}} disabled={true}>
-                <Text textAlign='center' style={[{fontSize: 66, color:'#3d2fff',fontWeight:'bold'}]}>  {this.state.min} : {this.state.sec}</Text>
-                </Button>
-            </View>
+                    <View style={[{marginTop:70,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
+                <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min} : {this.state.sec}</Text>
+                    </View>
                     <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
                 <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
                     <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>

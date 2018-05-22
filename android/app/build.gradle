@@ -113,7 +113,6 @@ android {
     }
 
 
-
     splits {
         abi {
             reset()
@@ -126,7 +125,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            
+
 
         }
     }
