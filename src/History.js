@@ -37,10 +37,13 @@ export default class History extends Component{
             }
         });
         this.d2 = DeviceEventEmitter.addListener("login",() => this.onFlush());
+        this.d3 = DeviceEventEmitter.addListener("logout",() => this.forceUpdate());
         this.onFlush();
     }
     componentWillUnmount(){
         this.d1.remove();
+        this.d2.remove();
+        this.d3.remove();
     };
     onDelete(id){
         fetch(`${localURL}/historys/${id}/remove/`,{

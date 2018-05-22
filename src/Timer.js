@@ -53,7 +53,7 @@ class Tiktok extends SoundPlay{
                     sec:Tiktok.formatter((time - 1) % 60),
                 });
             }else{
-                this.endCount(false);
+                this.endCount();
             }}, 1000
         );
     };

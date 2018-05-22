@@ -20,19 +20,15 @@ export default class PostItem extends Component{
                 </CardItem>
                 <CardItem>
                     <Body>
-                    <Text>  {this.props.detail.content}</Text>
+                    <Text>{`#${this.props.detail.type === 'normal'?'动态':'经验'}#   ${this.props.detail.content}`}</Text>
                     </Body>
                 </CardItem>
                 {this.props.detail.author._id === userId ? (
                     <CardItem>
                         <Left>
-                            <Text note>{moment(this.props.detail.create_at).format('YYYY-MM-DD')}</Text>
+                            <Text note>{moment(this.props.detail.date).format('YYYY-MM-DD HH:mm')}</Text>
                         </Left>
-                        <Body>
-                            <Button transparent textStyle={{color: '#05f'}}>
-                                <Text>修改</Text>
-                            </Button>
-                        </Body>
+                        <Body></Body>
                         <Right>
                             <Button transparent textStyle={{color: '#05f'}} onPress={() => this.onDelete()}>
                                 <Text>删除</Text>
