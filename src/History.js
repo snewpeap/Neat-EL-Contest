@@ -15,25 +15,29 @@ export default class History extends Component{
     componentDidMount(){
         this.d1 = DeviceEventEmitter.addListener('flush',(newHistory) => {
             if (isLogin) {
-                fetch(`${localURL}/historys/create/`, {
-                    method: 'POST',
-                    headers: {},
-                    body: newHistory,
-                    credentials: 'include',
-                })
-                    .then((response) => {
-                        if (response.ok) {
-                            response.json().then((json) => {
-                               Platform.OS === 'android'? ToastAndroid.show(json.message, ToastAndroid.SHORT) : alert(json.message);
-                            });
-                            this.onFlush();
-                        } else if (response.status === 500) {
-                            response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
-                        }
+                if (newHistory) {
+                    fetch(`${localURL}/historys/create/`, {
+                        method: 'POST',
+                        headers: {},
+                        body: newHistory,
+                        credentials: 'include',
                     })
-                    .catch((error) => {
-                        Platform.OS === 'android' ? ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error);
-                    });
+                        .then((response) => {
+                            if (response.ok) {
+                                response.json().then((json) => {
+                                    Platform.OS === 'android'? ToastAndroid.show(json.message, ToastAndroid.SHORT) : alert(json.message);
+                                });
+                                this.onFlush();
+                            } else if (response.status === 500) {
+                                response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
+                            }
+                        })
+                        .catch((error) => {
+                            Platform.OS === 'android' ? ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error);
+                        });
+                }else{
+                    this.onFlush();
+                }
             }
         });
         this.d2 = DeviceEventEmitter.addListener("login",() => this.onFlush());
@@ -107,7 +111,7 @@ export default class History extends Component{
                                         <View>
                                             <Text>你还没有登陆</Text>
                                             <Text>不登陆你能变强吗？</Text>
-                                            <Button onPress={() => this.props.navigation.navigate('SocialPage')}>
+                                            <Button onPress={() => DeviceEventEmitter.emit('jumpToLogin')}>
                                                 <Text>去登陆</Text>
                                             </Button>
                                         </View>

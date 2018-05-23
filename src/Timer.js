@@ -126,10 +126,10 @@ export default class Timer extends SoundPlay {
             targetTime: "0",
             title:null,
             isReady: true,
-            selected: undefined,
+            selected: null,
             modalTransparent: true,
             modalVisible:false,
-            isPlaySound : false,
+            isPlaySound:false,
         };
     }
     l2 = null;
@@ -214,11 +214,11 @@ export default class Timer extends SoundPlay {
                         <Label style={{color:'#000000'}}>专注时长：</Label>
                         <Picker
                             mode="dropdown"
-                            placeholder="Select one"
+                            placeholder="选择时长"
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}
                         >
-                            <Picker.Item disabled label='Select one' value='0'/>
+                            <Picker.Item disabled label='选择时长' value='0'/>
                             <Picker.Item label="1" value='1' />
                             <Picker.Item label="5" value='5' />
                             <Picker.Item label="15" value='15' />

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {Button, Col, Container, Content, Form, Grid, Input, Item, Picker, Text, Textarea, View,} from 'native-base';
-import {StyleSheet, ToastAndroid,Platform} from 'react-native';
+import {Button, Col, Container, Content, Form, Grid, Picker, Text, Textarea, View,} from 'native-base';
+import {StyleSheet,DeviceEventEmitter,ToastAndroid,Platform} from 'react-native';
 import PostItem from '../postItem';
 
 const MAX = 50;
@@ -14,7 +14,11 @@ export default class Social_quanzi extends Component{
             posts:[],
         };
     }
+    d1 = null;
     componentDidMount(){
+        this.d1 = DeviceEventEmitter.addListener('socialflush',() => {
+           this.onFlush();
+        });
         this.onFlush();
     }
     onValueChange(value: string){
@@ -110,7 +114,7 @@ export default class Social_quanzi extends Component{
                                     placeholder={'类型'}
                                     selectedValue={this.state.typeSelected}
                                     onValueChange={this.onValueChange.bind(this)}
-                                    style={[{width: 70}]}
+                                    style={[{width: 90}]}
                                 >
                                     <Picker.Item label="动态" value='normal'/>
                                     <Picker.Item label="经验" value='jingyan'/>
@@ -130,16 +134,16 @@ export default class Social_quanzi extends Component{
                             </Col>
                         </Grid>
                     </View>
-                    <View style={[{flex: 3,backgroundColor:'#fff'}]}>
+                    <View style={[{flex: 3,backgroundColor:'transparent'}]}>
                         {Object.keys(this.state.posts).length !== 0 ? (
                             <View>
                                 {
-                                    this.state.posts.map((item, i) => <PostItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
+                                    this.state.posts.map((item, i) => <PostItem first last key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
                                 }
                                 </View>
                         ) : (
-                            <View style={[{flex: 1, alignItems: 'center'}]}>
-                                <Text>一条推文都没有</Text>
+                            <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
+                                <Text>世界上还没有一条推文</Text>
                             </View>
                         )
                         }
