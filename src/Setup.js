@@ -23,19 +23,19 @@ export default class Setup extends Component{
                 if (response.ok){
                     isLogin = true;
                     response.json().then((json) => {
-                        alert(json.message);
+                        ToastAndroid.show(json.message, ToastAndroid.SHORT);
                         userId = json.userData.id;
                         nickname = json.userData.nickname;
                         DeviceEventEmitter.emit('login');
                     })
                 }else if (response.status === 500) {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => ToastAndroid.show(json.error, ToastAndroid.SHORT));
                 }else if (response.status === 666) {
-                    response.json().then((json) => alert(json.message));
+                    response.json().then((json) =>  ToastAndroid.show(json.message, ToastAndroid.SHORT));
                 }
             })
             .catch((error) => {
-                alert(error);
+                ToastAndroid.show(error, ToastAndroid.SHORT);
             });
         SplashScreen.hide();
     }

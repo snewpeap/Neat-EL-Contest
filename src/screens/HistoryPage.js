@@ -35,7 +35,7 @@ const Tab = TabNavigator(
     initialRouteName: 'History',
     tabBarOptions:{
     activeTintColor: 'white',
-        inactiveTintColor: '#3d2fff',
+        inactiveTintColor:'#3d2fff',
         style:{
         backgroundColor: '#1d1150',
     },

@@ -14,7 +14,7 @@ const Tab = TabNavigator(
             navigationOptions :{
                 tabBarLabel:'Mine',
                 tabBarIcon : ({focused}) => (
-                    <Text style={{color: !focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
                 )
             },
         },
@@ -23,7 +23,7 @@ const Tab = TabNavigator(
             navigationOptions: {
                 tabBarLabel:'Moments',
                 tabBarIcon: ({focused}) => (
-                    <Text style={{color: !focused?'white':'#3d2fff', fontSize:18}}>圈子</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>圈子</Text>
                 ),
             },
         },

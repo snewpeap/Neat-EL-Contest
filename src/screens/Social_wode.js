@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter, Text} from "react-native";
+import {DeviceEventEmitter, Text, ToastAndroid,Platform} from "react-native";
 import {Button, View} from "native-base";
 
 
@@ -20,11 +20,11 @@ export default class Social_wode extends Component{
                     nickname = null;
                     DeviceEventEmitter.emit('logout');
                 }else {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
             });
     }
     render(){
