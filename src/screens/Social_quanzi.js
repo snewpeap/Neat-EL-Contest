@@ -97,7 +97,7 @@ export default class Social_quanzi extends Component{
                     <View style={[{flex: 1, backgroundColor: '#ddd'}]}>
                         <Form style={[{margin: 5}]}>
                             <Textarea rowSpan={3}
-                                      placeholder={`${MAX}以内，随意发挥~`}
+                                      placeholder={`${MAX}字以内，随意发挥~`}
                                       onChangeText={(text) => {
                                           this.setState({
                                               content: text,
@@ -108,13 +108,14 @@ export default class Social_quanzi extends Component{
                             />
                         </Form>
                         <Grid>
+                            <Col style={[styles.col,{flex:1}]}/>
                             <Col style={styles.col}>
                                 <Picker
                                     mode="dropdown"
                                     placeholder={'类型'}
                                     selectedValue={this.state.typeSelected}
                                     onValueChange={this.onValueChange.bind(this)}
-                                    style={[{width: 90}]}
+                                    style={[{width: 75}]}
                                 >
                                     <Picker.Item label="动态" value='normal'/>
                                     <Picker.Item label="经验" value='jingyan'/>

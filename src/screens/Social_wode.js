@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter, Platform, StyleSheet,TouchableNativeFeedback,ToastAndroid} from "react-native";
-import {Body, Button,, Text, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, View} from "native-base";
+import {Body, Button, Text, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, View} from "native-base";
 
 
 export default class Social_wode extends Component{
