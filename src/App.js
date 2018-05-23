@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {DeviceEventEmitter} from 'react-native';
 import {Icon, Root} from 'native-base';
 import {StackNavigator, TabBarBottom, TabNavigator} from 'react-navigation';
 import HistoryPage from "./screens/HistoryPage";
@@ -14,27 +15,29 @@ const Tab = TabNavigator(
             screen: HistoryPage,
             navigationOptions:{
                 tabBarLabel: 'History',
-                tabBarIcon: ({focused}) => (
-                    <Icon name = 'paper' style={{color: focused?'white':'#3d2fff'}}/>
-                )
+                tabBarIcon: ({focused}) => (<Icon name = 'paper' style={{color: focused?'white':'#3d2fff'}}/>),
+                tabBarOnPress:(obj) => {
+                    DeviceEventEmitter.emit('flush');
+                    obj.jumpToIndex(obj.scene.index);
+                }
             },
         },
         TimerPage:{
             screen: TimerPage,
             navigationOptions:{
                 tabBarLabel: 'Timer',
-                tabBarIcon: ({focused}) => (
-                    <Icon name = 'alarm' style={{color: focused?'white':'#3d2fff'}}/>
-                )
+                tabBarIcon: ({focused}) => (<Icon name = 'alarm' style={{color: focused?'white':'#3d2fff'}}/>)
             },
         },
         SocialPage:{
             screen: SocialPage,
             navigationOptions:{
                 tabBarLabel: 'Social',
-                tabBarIcon: ({focused}) => (
-                    <Icon name = 'person' style={{color: focused?'white':'#3d2fff'}}/>
-                )
+                tabBarIcon: ({focused}) => (<Icon name = 'person' style={{color: focused?'white':'#3d2fff'}}/>),
+                tabBarOnPress:(obj) => {
+                    DeviceEventEmitter.emit('socialflush');
+                    obj.jumpToIndex(obj.scene.index);
+                }
             },
         },
     },
@@ -59,9 +62,11 @@ const Nav = StackNavigator(
     {
         Tab: {
             screen: Tab,
+            navigationOptions:{},
         },
         Login:{
             screen: LoginPage,
+            navigationOptions:{},
         },
         Register: {
             screen: RegisterPage,

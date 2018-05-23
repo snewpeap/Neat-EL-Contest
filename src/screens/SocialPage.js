@@ -1,47 +1,66 @@
 import React, { Component } from 'react';
 import {Container, Content, Text, } from 'native-base';
-import {TabBarBottom, TabNavigator} from 'react-navigation';
+import {StackNavigator, TabBarBottom, TabNavigator} from 'react-navigation';
 import {DeviceEventEmitter} from 'react-native';
-import LoginPage from './LoginPage'
-import Social_wode from './Social_wode'
-import Social_quanzi from './Social_quanzi'
+import LoginPage from './LoginPage';
+import Social_wode from './Social_wode';
+import Social_quanzi from './Social_quanzi';
+import MyPosts from './MyPosts';
+import MyFavorite from './Myfavorite';
 
 
 const Tab = TabNavigator(
     {
-        Social_wode:{
-            screen : Social_wode,
-            navigationOptions :{
-                tabBarLabel:'Mine',
-                tabBarIcon : ({focused}) => (
-                    <Text style={{color: !focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
-                )
-            },
-        },
         Social_quanzi: {
             screen: Social_quanzi,
             navigationOptions: {
                 tabBarLabel:'Moments',
                 tabBarIcon: ({focused}) => (
-                    <Text style={{color: !focused?'white':'#3d2fff', fontSize:18}}>圈子</Text>
+                    <Text style={{color: focused?'white':'#003', fontSize:18}}>圈子</Text>
                 ),
+            },
+        },
+        Social_wode:{
+            screen : Social_wode,
+            navigationOptions :{
+                tabBarLabel:'Mine',
+                tabBarIcon : ({focused}) => (
+                    <Text style={{color: focused?'white':'#003', fontSize:18}}>我的</Text>
+                )
             },
         },
     },
     {
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'top',
-        lazy: true,
+        lazy: false,
         swipeEnabled: true,
-        initialRouteName: 'Social_wode',
+        initialRouteName: 'Social_quanzi',
         tabBarOptions:{
             activeTintColor: 'white',
-            inactiveTintColor: '#3d2fff',
+            inactiveTintColor: '#002',
             style:{
                 backgroundColor: '#1d1150',
             },
         }
     },
+);
+const Nav = StackNavigator(
+    {
+        Tab:{
+            screen: Tab,
+        },
+        MyPosts:{
+            screen: MyPosts,
+        },
+        MyFavorite:{
+            screen: MyFavorite,
+        }
+    },
+    {
+        initialRouteName: 'Tab',
+        headerMode: 'none',
+    }
 );
 class SocialPage extends Component{
     constructor(props){
@@ -69,9 +88,7 @@ class SocialPage extends Component{
                     </Content>
                 </Container>
             ):(
-                <Container>
-                    <Tab/>
-                </Container>
+                <Nav/>
             )
         );
     }
