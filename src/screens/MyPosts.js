@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {Container, Content, Text, View} from "native-base";
-import {DeviceEventEmitter} from "react-native";
+import {DeviceEventEmitter, Platform, ToastAndroid} from "react-native";
 import PostItem from '../postItem';
 
 export default class MyPosts extends Component{
@@ -26,7 +26,7 @@ export default class MyPosts extends Component{
                         })
                     });
                 } else {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error));
                 }
             })
             .catch((error) => {
