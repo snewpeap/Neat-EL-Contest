@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text, View} from "native-base";
-import {DeviceEventEmitter, Modal, StyleSheet,} from 'react-native';
+import {DeviceEventEmitter, Modal, StyleSheet,Platform,AppState} from 'react-native';
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
 import BackgroundTimer from 'react-native-background-timer';
@@ -38,12 +38,13 @@ class Tiktok extends SoundPlay{
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
     }
     componentWillUnmount(){
-        countDown && BackgroundTimer.clearInterval(countDown);
+         countDown &&(Platform.OS === 'android'? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown));
         this.d1.remove();
         this.stopSoundLooped();
     }
     tiktok(){
         this.state.isPlaySound ? this.playSoundLoop() :  {};
+        if(Platform.OS === 'android'){
         global.countDown = BackgroundTimer.setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
@@ -55,10 +56,37 @@ class Tiktok extends SoundPlay{
             }else{
                 this.endCount();
             }}, 1000
-        );
-    };
+        );}else{
+            if(AppState.currentState === 'active'){
+                BackgroundTimer.stopBackgroundTimer();
+            global.countDown = setInterval(() => {
+                if (this.state.timee > 0){
+                    let time = this.state.timee;
+                    this.setState({
+                        timee:this.state.timee - 1,
+                        min:Tiktok.formatter(Math.trunc((time - 1) / 60)),
+                        sec:Tiktok.formatter((time - 1) % 60),
+                    });
+                }else{
+                    this.endCount();
+                }}, 1000
+            );
+        }else{
+                 BackgroundTimer.runBackgroundTimer(() => {
+                    if (this.state.timee > 0){
+                        let time = this.state.timee;
+                        this.setState({
+                            timee:this.state.timee - 3,
+                            min:Tiktok.formatter(Math.trunc((time - 3) / 60)),
+                            sec:Tiktok.formatter((time - 3) % 60),
+                        });
+                    }else{
+                        this.endCount();
+                    }}, 3000
+                );
+    }}}
     stopCountDown(){
-        BackgroundTimer.clearInterval(countDown);
+       Platform.OS === 'android' ? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown);
         this.stopSoundLooped();
     }
     onButtonClick=() => {
@@ -72,20 +100,18 @@ class Tiktok extends SoundPlay{
     };
     render(){
         return(
-            <View>
-                <View style={[{alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
-                    <Button bordered style={{borderRadius:1000, width:300, height:300,}} disabled={true}>
-                        <Text textAlign='center' style={[{fontSize: 66, color:'#3d2fff',fontWeight:'bold'}]}>  {this.state.min} : {this.state.sec}</Text>
-                    </Button>
-                </View>
-                <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
-                    <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
-                        <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>
-                    </Button>
-                    <Button style={{borderRadius:100,marginTop:50,width:100, height:100}} onPress={() => this.onAbandonButtonClick()}>
-                        <Text  style={[{fontSize : 30}]}>放弃</Text>
-                    </Button>
-                </View>
+                <View>
+                    <View style={[{marginTop:70,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
+                <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min} : {this.state.sec}</Text>
+                    </View>
+                    <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
+                <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
+                    <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>
+                </Button>
+                <Button style={{borderRadius:100,marginTop:50,width:100, height:100}} onPress={() => this.onAbandonButtonClick()}>
+                    <Text  style={[{fontSize : 30}]}>放弃</Text>
+                </Button>
+                    </View>
             </View>
         );
     }
@@ -178,10 +204,10 @@ export default class Timer extends SoundPlay {
             <Container style={[{flexDirection:'column',marginTop:10}]}>
                 {this.state.isReady ? (
                     <View style={[{flexDirection:'column'}]}>
-                        <Label style={{color:'#000000'}}>专注项目名称：</Label>
+                        <Label style={{color:'#000000'}}>专注项目：</Label>
                         <Item rounded style={[{backgroundColor:'#fff'}]}>
                             <Input multiline={false}
-                                   placeholder={'事件'}
+                                   placeholder={'专注就是妙'}
                                    onChangeText={(text) => this.setState({title:text})}
                             />
                         </Item>

@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {DeviceEventEmitter} from 'react-native';
+import {DeviceEventEmitter,ToastAndroid,Platform} from 'react-native';
 import {Button, Container, Content, Form, Header, Input, Item, Label, Text} from "native-base";
 
 String.prototype.trim=function(){
@@ -44,13 +44,13 @@ export default class LoginPage extends Component{
                         DeviceEventEmitter.emit('login');
                     })
                 }else if (response.status === 500) {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)));
                 }else if (response.status === 666) {
-                    response.json().then((json) => alert(json.message));
+                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
             })
     }
     render(){

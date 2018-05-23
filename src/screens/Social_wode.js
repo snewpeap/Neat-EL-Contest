@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter, Text, Platform, StyleSheet,TouchableNativeFeedback} from "react-native";
-import {Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, View} from "native-base";
+import {DeviceEventEmitter, Platform, StyleSheet,TouchableNativeFeedback,ToastAndroid} from "react-native";
+import {Body, Button,, Text, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, View} from "native-base";
 
 
 export default class Social_wode extends Component{
@@ -20,11 +20,11 @@ export default class Social_wode extends Component{
                     nickname = null;
                     DeviceEventEmitter.emit('logout');
                 }else {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
             });
     }
     render(){

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Col, Container, Content, Form, Grid, Picker, Text, Textarea, View,} from 'native-base';
-import {StyleSheet,DeviceEventEmitter} from 'react-native';
+import {StyleSheet,DeviceEventEmitter,ToastAndroid,Platform} from 'react-native';
 import PostItem from '../postItem';
 
 const MAX = 50;
@@ -39,11 +39,11 @@ export default class Social_quanzi extends Component{
                         })
                     });
                 } else {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android' ?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
             })
     }
     onDelete(id){
@@ -55,14 +55,14 @@ export default class Social_quanzi extends Component{
                 if (response.ok){
                     this.onFlush();
                     response.json().then((json) => {
-                        alert(json.message);
+                        Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
             });
     }
     send(){
@@ -80,14 +80,14 @@ export default class Social_quanzi extends Component{
                     this.setState({content:''});
                     this.onFlush();
                     response.json().then((json) => {
-                        alert(json.message);
+                        Platform.OS === 'android'?ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
             })
     }
     render(){
