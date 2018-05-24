@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
+import {DeviceEventEmitter, ToastAndroid, Platform, ImageBackground, View} from 'react-native';
 import {Button, Container, Content, Form, Header, Input, Item, Label, Text} from "native-base";
 
 String.prototype.trim=function(){
@@ -56,9 +56,10 @@ export default class LoginPage extends Component{
     render(){
         return(
             <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-            <Container>
+            <Container >
                 <Content>
-                    <Form style={[{alignItems:'center'}]}>
+                    <View style={{height:100}}/>
+                    <Form style={[{alignItems:'center',borderTopEndRadius:10,borderTopStartRadius:10}]}>
                         <Item inlineLabel >
                             <Label>用户名</Label>
                             <Input
@@ -84,10 +85,13 @@ export default class LoginPage extends Component{
                         </Item>
                     </Form>
                     {this.state.isError?(
+                        <View>
                         <Text style={[{margin:5, color:'red'}]}>{this.state.tips}</Text>
+                        </View>
                     ):(null)}
+                    <View style={{borderBottomEndRadius:10,borderBottomStartRadius:10}}>
                     <Button block
-                            style={[{margin:5}]}
+                            style={[{margin:5,borderRadius:10}]}
                             disabled={
                                 this.state.username === null || this.state.username.toString().trim() == '' || this.state.password === null || this.state.password.toString().trim() == ''
                             }
@@ -95,7 +99,7 @@ export default class LoginPage extends Component{
                         <Text>登陆</Text>
                     </Button>
                     <Button block transparent bordered
-                            style={[{margin:5}]}
+                            style={[{margin:5,borderRadius:10}]}
                             onPress={() => this.props.navigation.navigate('Register',{
                                 callback:(params) => {
                                     this.setState({
@@ -105,6 +109,7 @@ export default class LoginPage extends Component{
                                 }})}>
                         <Text>注册</Text>
                     </Button>
+                    </View>
                 </Content>
             </Container>
             </ImageBackground>

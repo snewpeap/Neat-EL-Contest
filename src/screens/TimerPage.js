@@ -21,8 +21,8 @@ class TimerPage extends Component{
         return (
             <Container style={{flexDirection : 'column'}}>
                 <Content scrollEnabled={false}>
-                    <ImageBackground  style={{}} source={require('../../lib/images/background_2.png')}>
-                <Timer/>
+                    <ImageBackground style={{}} source={require('../../lib/images/background_2.png')}>
+                        <Timer/>
                     </ImageBackground>
                 </Content>
             </Container>

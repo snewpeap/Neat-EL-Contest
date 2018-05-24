@@ -10,7 +10,7 @@ export default class Setup extends Component{
     constructor(props){
         super(props);
         global.isLogin = false;
-        global.localURL = "http://172.27.151.30:80";
+        global.localURL = "http://101.132.114.36:80";
         global.userId = null;
         global.nickname = null;
     }
