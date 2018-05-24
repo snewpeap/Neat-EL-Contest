@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Container, Content, Text, } from 'native-base';
 import {StackNavigator, TabBarBottom, TabNavigator} from 'react-navigation';
-import {DeviceEventEmitter} from 'react-native';
+import {DeviceEventEmitter, ImageBackground} from 'react-native';
 import LoginPage from './LoginPage';
 import Social_wode from './Social_wode';
 import Social_quanzi from './Social_quanzi';
@@ -11,22 +11,22 @@ import MyFavorite from './Myfavorite';
 
 const Tab = TabNavigator(
     {
-        Social_quanzi: {
-            screen: Social_quanzi,
-            navigationOptions: {
-                tabBarLabel:'Moments',
-                tabBarIcon: ({focused}) => (
-                    <Text style={{color: focused?'white':'#003', fontSize:18}}>圈子</Text>
-                ),
-            },
-        },
         Social_wode:{
             screen : Social_wode,
             navigationOptions :{
                 tabBarLabel:'Mine',
                 tabBarIcon : ({focused}) => (
-                    <Text style={{color: focused?'white':'#003', fontSize:18}}>我的</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
                 )
+            },
+        },
+        Social_quanzi: {
+            screen: Social_quanzi,
+            navigationOptions: {
+                tabBarLabel:'Moments',
+                tabBarIcon: ({focused}) => (
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>圈子</Text>
+                ),
             },
         },
     },
@@ -35,10 +35,10 @@ const Tab = TabNavigator(
         tabBarPosition: 'top',
         lazy: false,
         swipeEnabled: true,
-        initialRouteName: 'Social_quanzi',
+        initialRouteName: 'Social_wode',
         tabBarOptions:{
             activeTintColor: 'white',
-            inactiveTintColor: '#002',
+            inactiveTintColor: '#3d2fff',
             style:{
                 backgroundColor: '#1d1150',
             },
@@ -88,7 +88,7 @@ class SocialPage extends Component{
                     </Content>
                 </Container>
             ):(
-                <Nav/>
+            <Nav/>
             )
         );
     }

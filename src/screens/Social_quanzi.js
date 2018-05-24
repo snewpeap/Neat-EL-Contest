@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Col, Container, Content, Form, Grid, Picker, Text, Textarea, View,} from 'native-base';
-import {StyleSheet,DeviceEventEmitter,ToastAndroid,Platform} from 'react-native';
+import {StyleSheet, DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
 import PostItem from '../postItem';
 
 const MAX = 50;
@@ -45,7 +45,7 @@ export default class Social_quanzi extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android' ?ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error)
+                Platform.OS === 'android' ?ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message)
             })
     }
     onDelete(id){
@@ -64,7 +64,7 @@ export default class Social_quanzi extends Component{
                     });
                 }
             }).catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             });
     }
     onFavorite(i,id,isFavorite,callback){
@@ -85,12 +85,13 @@ export default class Social_quanzi extends Component{
                     });
                 }
             }).catch((error) => {
-            Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
+            Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
         });
     }
     send(){
         let post = new FormData();
-        post.append('content', this.state.content);
+        let content = this.state.content.toString().replace(/[\n]/g, ' ');
+        post.append('content', content);
         post.append('type', this.state.typeSelected);
         fetch(`${localURL}/posts/create`,{
             method:'POST',
@@ -111,7 +112,7 @@ export default class Social_quanzi extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             })
     }
     render(){
@@ -159,6 +160,9 @@ export default class Social_quanzi extends Component{
                     </View>
                     <View style={[{flex: 3,backgroundColor:'transparent'}]}>
                         {Object.keys(this.state.posts).length !== 0 ? (
+                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
+                            <Container>
+                                <Content>
                             <View>
                                 {
                                     this.state.posts.map((item, i) =>
@@ -169,10 +173,19 @@ export default class Social_quanzi extends Component{
                                         />)
                                 }
                                 </View>
+                                </Content>
+                            </Container>
+                            </ImageBackground>
                         ) : (
+                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
+                                <Container>
+                                    <Content>
                             <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
                                 <Text>世界上还没有一条推文</Text>
                             </View>
+                                    </Content>
+                                </Container>
+                            </ImageBackground>
                         )
                         }
                         </View>

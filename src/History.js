@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Container, Content, Text, View} from "native-base";
 import HistoryItem from './HistoryItem';
-import {DeviceEventEmitter, ToastAndroid,Platform} from 'react-native';
+import {DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
 
 
 export default class History extends Component{
@@ -33,7 +33,7 @@ export default class History extends Component{
                             }
                         })
                         .catch((error) => {
-                            Platform.OS === 'android' ? ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error);
+                            Platform.OS === 'android' ? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message);
                         });
                 }else{
                     this.onFlush();
@@ -65,7 +65,7 @@ export default class History extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message)
             });
     }
     onFlush(){
@@ -85,7 +85,7 @@ export default class History extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             })
     }
     render(){
@@ -93,17 +93,30 @@ export default class History extends Component{
             <Container>
                 <Content>
                     {isLogin? (Object.keys(this.state.historys).length !== 0?(
+                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
+                        <Container>
+                            <Content>
                         <View>
                             {
                                 this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
                             }
                             </View>
+                            </Content>
+                        </Container>
+                        </ImageBackground>
                         ):(
+                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
+                            <Container>
+                                <Content>
                             <View style={[{flex:1, alignItems:'center'}]}>
                                 <Text>你还没有专注历史</Text>
                             </View>
+                                </Content>
+                            </Container>
+                        </ImageBackground>
                             )
                         ):(
+                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
                             <Container>
                                 <Content>
                                     {isLogin?
@@ -118,6 +131,7 @@ export default class History extends Component{
                                     }
                                     </Content>
                             </Container>
+                            </ImageBackground>
                     )
                 }
                 </Content>

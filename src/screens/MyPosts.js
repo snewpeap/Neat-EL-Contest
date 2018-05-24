@@ -30,7 +30,7 @@ export default class MyPosts extends Component{
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message)
             })
     }
     onDelete(id){
@@ -42,14 +42,14 @@ export default class MyPosts extends Component{
                 if (response.ok){
                     this.onFlush();
                     response.json().then((json) => {
-                        alert(json.message);
+                        Platform.OS === 'android'? ToastAndroid.show(json.message, ToastAndroid.SHORT) : alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => alert(json.error));
+                    response.json().then((json) => ( Platform.OS === 'android'? ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
                 }
             })
             .catch((error) => {
-                alert(error);
+                Platform.OS === 'android'? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message)
             });
     }
     onFavorite(i,id,isFavorite,callback){

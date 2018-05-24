@@ -1,11 +1,23 @@
 import React,{Component} from 'react';
 import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text, View} from "native-base";
-import {DeviceEventEmitter, Modal, StyleSheet,Platform,AppState} from 'react-native';
+import {DeviceEventEmitter, Modal, StyleSheet,Platform,AppState,Vibration} from 'react-native';
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
 import BackgroundTimer from 'react-native-background-timer';
+import ScrollVertical from './ScrollVertical';
 
 
+const dataArray = [
+    {
+        title: '降价了',
+    },
+    {
+        title: '全场五折',
+    },
+    {
+        title: '打到骨折dadadadadadadad',
+    }
+];
 
 class Tiktok extends SoundPlay{
     constructor(props){
@@ -94,12 +106,20 @@ class Tiktok extends SoundPlay{
         this.setState({isPause:!this.state.isPause});
     };
     onAbandonButtonClick=() => {
-        this.stopCountDown();
-        this.setState({isPause:true,isPlaySound:false});
+        Platform.OS === 'android' ? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown);
+        this.setState({isPause:true});
         this.props.onAbandon();
     };
     render(){
+        let array = [{ content: '' }];
+        if (dataArray && dataArray.length > 0) {
+            array = [];
+            for (let item of dataArray) {
+                array.push({ content: item.title});
+            }
+        }
         return(
+            <View>
                 <View>
                     <View style={[{marginTop:70,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
                 <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min} : {this.state.sec}</Text>
@@ -112,6 +132,20 @@ class Tiktok extends SoundPlay{
                     <Text  style={[{fontSize : 30}]}>放弃</Text>
                 </Button>
                     </View>
+            </View>
+            <View>
+    <ScrollVertical
+        onChange={(index => {
+            this.index = index;
+        })}
+        enableAnimation={true}
+        data={array}
+        delay={2500}
+        duration={1000}
+        scrollHeight={34}
+        scrollStyle={{alignItems: 'center' }}
+        />
+            </View>
             </View>
         );
     }
@@ -182,10 +216,12 @@ export default class Timer extends SoundPlay {
         newHistory.append("title",this.state.title === null?"专注就是妙":this.state.title);
         newHistory.append("length",this.state.targetTime);
         DeviceEventEmitter.emit('flush', newHistory);
-        this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false});
+        this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false,targetTime : '0'});
+        Vibration.vibrate();
     };
     uncommonTimesUp(){
-        this.setState({isReady: true, modalVisible:false, selected:"0"});
+        this.setState({isReady: true, modalVisible:false,isPlaySound : false, selected:"0",targetTime : '0'});
+        this.state.isPlaySound ? this.stopSoundLooped() :  {};
     }
     onValueChange(value: string){
         this.setState({
@@ -204,16 +240,18 @@ export default class Timer extends SoundPlay {
             <Container style={[{flexDirection:'column',marginTop:10}]}>
                 {this.state.isReady ? (
                     <View style={[{flexDirection:'column'}]}>
-                        <Label style={{color:'#000000'}}>专注项目：</Label>
+                        <Label style={{color:'white'}}>专注项目：</Label>
                         <Item rounded style={[{backgroundColor:'#fff'}]}>
                             <Input multiline={false}
                                    placeholder={'专注就是妙'}
+                                   style={[{color : '#000000'}]}
                                    onChangeText={(text) => this.setState({title:text})}
                             />
                         </Item>
-                        <Label style={{color:'#000000'}}>专注时长：</Label>
+                        <Label style={{color:'white'}}>专注时长：</Label>
                         <Picker
                             mode="dropdown"
+                            style={[{color : 'white'}]}
                             placeholder="选择时长"
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}
@@ -229,6 +267,7 @@ export default class Timer extends SoundPlay {
                             <Text>开始专注</Text>
                         </Button>
                         <RadioModal
+                            txtColor = {'white'}
                             selectedValue={this.state.initId}
                             onValueChange={(id,item)=>this.selected({initItem : item})}
                         >
