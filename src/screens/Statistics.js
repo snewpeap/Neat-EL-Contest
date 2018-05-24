@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, Container, Content, Text, View} from "native-base";
-import {DeviceEventEmitter} from "react-native";
+import {DeviceEventEmitter, ImageBackground} from "react-native";
 
 
 export default class Statistics extends Component{
@@ -19,21 +19,33 @@ export default class Statistics extends Component{
     render(){
         return(
             <Container>
-                <Content>
-                    {isLogin?
-                        (<View style={[{flex:1, alignItems:'center'}]}>
-                            <Text>这是统计</Text>
-                        </View>
-                        ): (
-                            <View>
-                            <Text>你还没有登陆</Text>
-                            <Text>不登陆你能变强吗？</Text>
-                            <Button onPress={() => DeviceEventEmitter.emit('jumpToLogin')}>
-                                <Text>去登陆</Text>
-                            </Button>
-                        </View>
-                        )
-                    }
+                <Content scrollEnabled={false}>
+                        {isLogin ?
+                            ( <ImageBackground style={{}} source={require('../../lib/images/background_1.png')}>
+                                    <Container>
+                                        <Content>
+                                <View style={[{flex: 1, alignItems: 'center'}]}>
+                                    <Text>这是统计</Text>
+                                </View>
+                                        </Content>
+                                    </Container>
+                                </ImageBackground>
+                            ) : (
+                                <ImageBackground style={{}} source={require('../../lib/images/background_1.png')}>
+                                <Container>
+                                    <Content>
+                                <View>
+                                    <Text>你还没有登陆</Text>
+                                    <Text>不登陆你能变强吗？</Text>
+                                    <Button onPress={() => DeviceEventEmitter.emit('jumpToLogin')}>
+                                        <Text>去登陆</Text>
+                                    </Button>
+                                </View>
+                                    </Content>
+                                </Container>
+                                </ImageBackground>
+                            )
+                        }
                 </Content>
             </Container>
         )

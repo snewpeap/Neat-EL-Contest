@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter, Platform, StyleSheet,TouchableNativeFeedback,ToastAndroid} from "react-native";
+import {DeviceEventEmitter, Platform, StyleSheet,TouchableNativeFeedback,ToastAndroid,ImageBackground,Image} from "react-native";
 import {Body, Button, Text, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, View} from "native-base";
 
 
@@ -24,22 +24,24 @@ export default class Social_wode extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message)
             });
     }
     render(){
         return(
             <Container>
-                <Header span style={{backgroundColor:'#3d2fff',flexDirection:'column'}}>
-                    <View style={{flex:1, alignSelf:'center'}}>
-                        <Text>给头像占个地</Text>
-                    </View>
-                    <View style={{flex:1, alignSelf:'center'}}>
-                        <Text style={{fontSize:30,color:'#222',margin:10}}>{nickname}</Text>
-                    </View>
+                <ImageBackground  style={{}} source={require('../../lib/images/head_portrait.png')}>
+                <Header style={{height:240, opacity: 0,flexDirection:'column'}}>
                 </Header>
-                <Content>
+                    <View style={{alignSelf:'center'}}>
+                        <Text style={{fontSize:30,color:'#222'}}>{nickname}</Text>
+                    </View>
+                </ImageBackground>
+                <Content scrollEnabled={false}>
                     <List>
+                        <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
+                        <Container>
+                            <Content scrollEnabled={false}>
                         <ListItem icon first last
                                   style={styles.listitem}
                                   background={TouchableNativeFeedback.SelectableBackground()}
@@ -99,6 +101,9 @@ export default class Social_wode extends Component{
                             <Text style={{color:'red',textAlign:'center'}}>退出登录</Text>
                             </Body>
                         </ListItem>
+                            </Content>
+                        </Container>
+                        </ImageBackground>
                     </List>
                 </Content>
             </Container>

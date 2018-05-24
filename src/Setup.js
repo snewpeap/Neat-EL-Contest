@@ -1,5 +1,5 @@
 import React, { Component }from 'react';
-import {DeviceEventEmitter, BackHandler, ToastAndroid} from 'react-native';
+import {DeviceEventEmitter, BackHandler, ToastAndroid,Platform} from 'react-native';
 import { StyleProvider } from 'native-base';
 import App from './App';
 import getTheme from "../native-base-theme/components"
@@ -29,13 +29,13 @@ export default class Setup extends Component{
                         DeviceEventEmitter.emit('login');
                     })
                 }else if (response.status === 500) {
-                    response.json().then((json) => ToastAndroid.show(json.error, ToastAndroid.SHORT));
+                    response.json().then((json) => (Platform.OS === 'android'? ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)));
                 }else if (response.status === 666) {
-                    response.json().then((json) =>  ToastAndroid.show(json.message, ToastAndroid.SHORT));
+                    response.json().then((json) =>  (Platform.OS === 'android'?ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)));
                 }
             })
             .catch((error) => {
-                ToastAndroid.show(error, ToastAndroid.SHORT);
+               Platform.OS==='android'? ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             });
         SplashScreen.hide();
     }

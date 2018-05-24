@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {DeviceEventEmitter,ToastAndroid,Platform} from 'react-native';
+import {DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
 import {Button, Container, Content, Form, Header, Input, Item, Label, Text} from "native-base";
 
 String.prototype.trim=function(){
@@ -50,11 +50,12 @@ export default class LoginPage extends Component{
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             })
     }
     render(){
         return(
+            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
             <Container>
                 <Content>
                     <Form style={[{alignItems:'center'}]}>
@@ -106,6 +107,7 @@ export default class LoginPage extends Component{
                     </Button>
                 </Content>
             </Container>
+            </ImageBackground>
         );
     }
 }

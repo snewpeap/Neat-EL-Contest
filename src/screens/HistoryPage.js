@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Container, Content, Text, View,} from 'native-base';
-import {DeviceEventEmitter} from 'react-native';
+import {DeviceEventEmitter, ImageBackground} from 'react-native';
 import {StackNavigator, TabBarBottom, TabNavigator} from 'react-navigation';
 import History from '../History';
 import Statistics from './Statistics';
@@ -15,7 +15,7 @@ const Tab = TabNavigator(
             navigationOptions :{
                 tabBarLabel:'List',
                 tabBarIcon : ({focused}) => (
-                    <Text style={{color: focused?'white':'#003', fontSize:18}}>列表</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>列表</Text>
                 )
             },
         },
@@ -24,7 +24,7 @@ const Tab = TabNavigator(
             navigationOptions: {
                 tabBarLabel:'Statistics',
                 tabBarIcon: ({focused}) => (
-                    <Text style={{color: focused?'white':'#003', fontSize:18}}>统计</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>统计</Text>
                 ),
             },
         }
@@ -37,7 +37,7 @@ const Tab = TabNavigator(
     initialRouteName: 'History',
     tabBarOptions:{
         activeTintColor: 'white',
-        inactiveTintColor: '#002',
+        inactiveTintColor: '#3d2fff',
         style:{
         backgroundColor: '#1d1150',
     },

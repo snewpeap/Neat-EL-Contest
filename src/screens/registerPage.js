@@ -113,7 +113,7 @@ export default class RegisterPage extends Component{
                 Platform.OS === 'android' ?ToastAndroid.show(JSON.stringify(json.message), ToastAndroid.SHORT):alert(JSON.stringify(json.message))
             })
             .catch((error) => {
-                Platform.OS === 'android' ?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android' ?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             })
 
     }
