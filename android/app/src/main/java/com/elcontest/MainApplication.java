@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.ocetnik.timer.BackgroundTimerPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactNativeHost;

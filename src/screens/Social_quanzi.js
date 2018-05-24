@@ -27,7 +27,7 @@ export default class Social_quanzi extends Component{
         });
     }
     onFlush(){
-        fetch(`${localURL}/posts?type=&author=`,{
+        fetch(`${localURL}/posts?type=&author=&requestFavorite=`,{
             method:'GET',
             credentials:'include',
         })
@@ -36,14 +36,16 @@ export default class Social_quanzi extends Component{
                     response.json().then((response) => {
                         this.setState({
                             posts:response.posts,
-                        })
+                        });
                     });
                 } else {
-                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)));
+                    response.json().then((json) => {
+                        Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)
+                    });
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android' ?ToastAndroid.show(error, ToastAndroid.SHORT) : alert(error)
+                Platform.OS === 'android' ?ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error)
             })
     }
     onDelete(id){
@@ -58,12 +60,33 @@ export default class Social_quanzi extends Component{
                         Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => (Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
+                    response.json().then((json) => {Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
                 }
-            })
-            .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+            }).catch((error) => {
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
             });
+    }
+    onFavorite(i,id,isFavorite,callback){
+        fetch(`${localURL}/favorite/${id}/${isFavorite?'remove':'create'}/`,{
+            method:isFavorite?'GET':'POST',
+            credentials:'include',
+        })
+            .then((response) => {
+                if (response.ok){
+                    callback(true);
+                    response.json().then((json) => {
+                        Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
+                    })
+                } else if (response.status === 500){
+                    callback(false);
+                    response.json().then((json) => {
+                        Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
+                }
+            }).catch((error) => {
+            Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
+        });
     }
     send(){
         let post = new FormData();
@@ -83,11 +106,12 @@ export default class Social_quanzi extends Component{
                         Platform.OS === 'android'?ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
+                    response.json().then((json) => {Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
                 }
             })
             .catch((error) => {
-                Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+                Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error)
             })
     }
     render(){
@@ -108,14 +132,12 @@ export default class Social_quanzi extends Component{
                             />
                         </Form>
                         <Grid>
-                            <Col style={[styles.col,{flex:1}]}/>
-                            <Col style={styles.col}>
+                            <Col style={[styles.col,{flex:3}]}>
                                 <Picker
                                     mode="dropdown"
-                                    placeholder={'类型'}
                                     selectedValue={this.state.typeSelected}
                                     onValueChange={this.onValueChange.bind(this)}
-                                    style={[{width: 75}]}
+                                    style={[{width: 100}]}
                                 >
                                     <Picker.Item label="动态" value='normal'/>
                                     <Picker.Item label="经验" value='jingyan'/>
@@ -139,7 +161,12 @@ export default class Social_quanzi extends Component{
                         {Object.keys(this.state.posts).length !== 0 ? (
                             <View>
                                 {
-                                    this.state.posts.map((item, i) => <PostItem first last key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
+                                    this.state.posts.map((item, i) =>
+                                        <PostItem first last
+                                                  key={i} detail={item} favor={false}
+                                                  onDelete={() => this.onDelete(item._id)}
+                                                  onFavorite={(isFavorite,callback) => this.onFavorite(i,item._id,isFavorite,callback)}
+                                        />)
                                 }
                                 </View>
                         ) : (

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
-import {Container, Content, Text, View} from "native-base";
-import {DeviceEventEmitter, Platform, ToastAndroid} from "react-native";
+import {Button, Container, Content, Header, Icon, Left, Right, Text, View} from "native-base";
+import {Platform, ToastAndroid} from "react-native";
 import PostItem from '../postItem';
 
 export default class MyPosts extends Component{
@@ -14,7 +14,7 @@ export default class MyPosts extends Component{
         this.onFlush();
     }
     onFlush(){
-        fetch(`${localURL}/posts?type=&author=${userId}`,{
+        fetch(`${localURL}/posts?type=&author=${userId}&requestFavorite=`,{
             method:'GET',
             credentials:'include',
         })
@@ -26,7 +26,7 @@ export default class MyPosts extends Component{
                         })
                     });
                 } else {
-                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error));
+                    response.json().then((json) => {Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)});
                 }
             })
             .catch((error) => {
@@ -52,14 +52,56 @@ export default class MyPosts extends Component{
                 alert(error);
             });
     }
+    onFavorite(i,id,isFavorite,callback){
+        fetch(`${localURL}/favorite/${id}/${isFavorite?'remove':'create'}/`,{
+            method:isFavorite?'GET':'POST',
+            credentials:'include',
+        })
+            .then((response) => {
+                if (response.ok){
+                    callback(true);
+                    response.json().then((json) => {
+                        Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
+                    })
+                } else if (response.status === 500){
+                    callback(false);
+                    response.json().then((json) => {
+                        Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    })
+                }
+            }).catch((error) => {
+            Platform.OS === 'android'?ToastAndroid.show(error, ToastAndroid.SHORT):alert(error)
+        });
+    }
     render(){
         return(
             <Container>
+                <Header>
+                    <Left>
+                        <Button transparent
+                                onPress={() => {
+                                    this.props.navigation.state.params.callback();
+                                    this.props.navigation.goBack();
+                                }}
+                        >
+                            <Icon name='ios-arrow-back'/>
+                        </Button>
+                    </Left>
+                    <Body style={{alignItem:'center'}}>
+                    <Text style={{color:'white'}}>我的推文</Text>
+                    </Body>
+                    <Right/>
+                </Header>
                 <Content>
                     {Object.keys(this.state.posts).length !== 0 ? (
                         <View>
                             {
-                                this.state.posts.map((item, i) => <PostItem first last key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
+                                this.state.posts.map((item, i) =>
+                                    <PostItem first last
+                                              key={i} detail={item}
+                                              onDelete={() => this.onDelete(item._id)}
+                                              onFavorite={(isFavorite,callback) => this.onFavorite(i,item._id,isFavorite,callback)}
+                                    />)
                             }
                             </View>
                     ) : (

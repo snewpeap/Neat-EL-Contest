@@ -44,7 +44,10 @@ export default class Social_wode extends Component{
                                   style={styles.listitem}
                                   background={TouchableNativeFeedback.SelectableBackground()}
                                   onPress={() => {
-                                      this.props.navigation.navigate('MyPosts');
+                                      this.props.navigation.navigate('MyPosts',{
+                                          callback:(params) => {
+                                              DeviceEventEmitter.emit('socialflush');
+                                          }});
                                   }}
                         >
                             <Left>
@@ -54,14 +57,17 @@ export default class Social_wode extends Component{
                             <Text>我的推文</Text>
                             </Body>
                             <Right>
-                                {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+                                <Icon active name="arrow-forward" />
                             </Right>
                         </ListItem>
                         <ListItem icon first last
                                   style={styles.listitem}
                                   background={TouchableNativeFeedback.SelectableBackground()}
                                   onPress={() => {
-                                      this.props.navigation.navigate('MyFavorite');
+                                      this.props.navigation.navigate('MyFavorite',{
+                                          callback:(params) => {
+                                              DeviceEventEmitter.emit('socialflush');
+                                          }});
                                   }}
                         >
                             <Left>
@@ -71,7 +77,7 @@ export default class Social_wode extends Component{
                             <Text>我的收藏</Text>
                             </Body>
                             <Right>
-                                {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+                                <Icon active name="arrow-forward" />
                             </Right>
                         </ListItem>
                         <ListItem icon first last style={styles.listitem}>
@@ -82,7 +88,7 @@ export default class Social_wode extends Component{
                             <Text>设置</Text>
                             </Body>
                             <Right>
-                                {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+                                <Icon active name="arrow-forward" />
                             </Right>
                         </ListItem>
 
