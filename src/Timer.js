@@ -51,24 +51,28 @@ class Tiktok extends SoundPlay{
     }
     componentDidMount(){
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
-        fetch(`${localURL}/posts/byTag?tag=${this.props.tag == DEFAULT_TITLE?'专注':this.props.tag}&type=jingyan&count=${this.props.timee / 15}`,{
-            method:'GET',
-            credentials:'include',
-        }).then((response) => {
-            if (response.ok){
-                response.json().then((response) => {
-                    this.setState({scrollItems:response.posts});
-                    return response;
-                }).then((response) => {
-                    this.tiktok();
+        if (login) {
+            fetch(`${localURL}/posts/byTag?tag=${this.props.tag == DEFAULT_TITLE ? '专注' : this.props.tag}&type=jingyan&count=${this.props.timee / 15}`, {
+                method: 'GET',
+                credentials: 'include',
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then((response) => {
+                        this.setState({scrollItems: response.posts});
+                        return response;
+                    }).then((response) => {
+                        this.tiktok();
+                    });
+                } else {
+                    response.json().then((json) => {
+                        Platform.OS === 'android' ? ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
+                }
+            })
+                .catch((error) => {
+                    Platform.OS === 'android' ? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message);
                 });
-            } else {
-                response.json().then((json) => {Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)});
-            }
-        })
-            .catch((error) => {
-                Platform.OS === 'android'? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message);
-            });
+        }
     }
     componentWillUnmount(){
         countDown &&(Platform.OS === 'android'? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown));
@@ -256,7 +260,7 @@ export default class Timer extends SoundPlay {
     timesUp(){
         let newHistory = new FormData();
         newHistory.append("title",this.state.title === null?DEFAULT_TITLE:this.state.title);
-        newHistory.append("length",this.state.targetTime);
+        newHistory.append("length",parseInt(this.state.timeList[this._indextime]));
         const targetTime = this.state.targetTime;
         DeviceEventEmitter.emit('flush', newHistory);
         this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false,targetTime : '0'});
