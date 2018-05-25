@@ -1,24 +1,26 @@
 import React,{Component} from 'react';
-import {Button, Col, Container, Content, Grid, Input, Item, Label, Picker, Text, View} from "native-base";
-import {DeviceEventEmitter, Modal, StyleSheet,Platform,AppState,Vibration} from 'react-native';
+import {Button, Col, Container, Content, Form, Grid, Icon, Input, Item, Label, Picker, Text,} from "native-base";
+import {
+    DeviceEventEmitter,
+    Modal,
+    StyleSheet,
+    Platform,
+    AppState,
+    Vibration,
+    ScrollView,
+    Animated,
+    Dimensions,
+    ToastAndroid,
+    View
+} from 'react-native';
 import SoundPlay from './SoundPlay';
 import RadioModal from 'react-native-radio-master';
 import BackgroundTimer from 'react-native-background-timer';
-import ScrollVertical from './ScrollVertical';
 
-
-const dataArray = [
-    {
-        title: '降价了',
-    },
-    {
-        title: '全场五折',
-    },
-    {
-        title: '打到骨折dadadadadadadad',
-    }
-];
-
+String.prototype.trim=function(){
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+};
+global.screenWidth = Dimensions.get('window').width;
 class Tiktok extends SoundPlay{
     constructor(props){
         super(props);
@@ -29,8 +31,12 @@ class Tiktok extends SoundPlay{
             sec:Tiktok.formatter(this.props.timee % 60),
             isPause:false,
             choose : this.props.choose,
-            isPlaySound:isPlaySound
+            isPlaySound:isPlaySound,
+            scrollItems:[],
         };
+
+        this._index = 0;
+        this._max = Object.keys(this.state.scrollItems).length + 1;
     }
     d1 = null;
     static formatter(timeLeft){
@@ -43,23 +49,50 @@ class Tiktok extends SoundPlay{
     endCount(){
         DeviceEventEmitter.emit('timesUp')
     }
-    componentWillMount(){
-        this.tiktok();
-    }
     componentDidMount(){
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
+        fetch(`${localURL}/posts/byTag?tag=${this.props.tag == DEFAULT_TITLE?'专注':this.props.tag}&type=jingyan&count=${this.props.timee / 15}`,{
+            method:'GET',
+            credentials:'include',
+        }).then((response) => {
+            if (response.ok){
+                response.json().then((response) => {
+                    this.setState({scrollItems:response.posts});
+                    return response;
+                }).then((response) => {
+                    this.tiktok();
+                });
+            } else {
+                response.json().then((json) => {Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)});
+            }
+        })
+            .catch((error) => {
+                Platform.OS === 'android'? ToastAndroid.show(error.message, ToastAndroid.SHORT) : alert(error.message);
+            });
     }
     componentWillUnmount(){
-         countDown &&(Platform.OS === 'android'? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown));
+        countDown &&(Platform.OS === 'android'? BackgroundTimer.clearInterval(countDown) : clearInterval(countDown));
         this.d1.remove();
         this.stopSoundLooped();
     }
     tiktok(){
+        this._max = this.state.scrollItems.length + 1;
         this.state.isPlaySound ? this.playSoundLoop() :  {};
+        let flag = 0;
         if(Platform.OS === 'android'){
         global.countDown = BackgroundTimer.setInterval(() => {
             if (this.state.timee > 0){
                 let time = this.state.timee;
+                if (flag < 9){
+                    flag ++;
+                } else {
+                    this._index++;
+                    if(this._index >= this._max){
+                        this._index = 0;
+                    }
+                    this._scrollView.scrollTo({x: this._index * screenWidth}, true);
+                    flag = 0;
+                }
                 this.setState({
                     timee:this.state.timee - 1,
                     min:Tiktok.formatter(Math.trunc((time - 1) / 60)),
@@ -68,12 +101,23 @@ class Tiktok extends SoundPlay{
             }else{
                 this.endCount();
             }}, 1000
-        );}else{
+        );
+        }else{
             if(AppState.currentState === 'active'){
                 BackgroundTimer.stopBackgroundTimer();
             global.countDown = setInterval(() => {
                 if (this.state.timee > 0){
                     let time = this.state.timee;
+                    if (flag < 9){
+                        flag ++;
+                    } else {
+                        this._index++;
+                        if(this._index >= this._max){
+                            this._index = 0;
+                        }
+                        this._scrollView.scrollTo({x: this._index * screenWidth}, true);
+                        flag = 0;
+                    }
                     this.setState({
                         timee:this.state.timee - 1,
                         min:Tiktok.formatter(Math.trunc((time - 1) / 60)),
@@ -87,6 +131,16 @@ class Tiktok extends SoundPlay{
                  BackgroundTimer.runBackgroundTimer(() => {
                     if (this.state.timee > 0){
                         let time = this.state.timee;
+                        if (flag < 3){
+                            flag ++;
+                        } else {
+                            this._index++;
+                            if(this._index >= this._max){
+                                this._index = 0;
+                            }
+                            this._scrollView.scrollTo({x: this._index * screenWidth}, true);
+                            flag = 0;
+                        }
                         this.setState({
                             timee:this.state.timee - 3,
                             min:Tiktok.formatter(Math.trunc((time - 3) / 60)),
@@ -111,42 +165,50 @@ class Tiktok extends SoundPlay{
         this.props.onAbandon();
     };
     render(){
-        let array = [{ content: '' }];
-        if (dataArray && dataArray.length > 0) {
-            array = [];
-            for (let item of dataArray) {
-                array.push({ content: item.title});
-            }
-        }
         return(
-            <View>
-                <View>
-                    <View style={[{marginTop:70,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
-                <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min} : {this.state.sec}</Text>
+                <View style={{flexDirection:'column',justifyContent:'center'}}>
+                    <View style={{height:30}}/>
+                    <ScrollView horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                                ref={(scrollView) => { this._scrollView = scrollView;}}
+                                style={{flex:2}}
+                    >
+                        <Animated.View style={{flexDirection:'row',flex:1}}>
+                            <View style={{flex:1,flexDirection:'row',alignItems:'baseline'}}>
+                                <View style={[{width:screenWidth,justifyContent: 'center',alignItems:'center', alignContent:'center', alignSelf:'center'}]}>
+                                    <Text  style={[{fontSize:77, color:'#3d2fff',fontWeight:'bold'}]}>{this.state.min}:{this.state.sec}</Text>
+                                </View>
+                                {this.state.scrollItems.map((item,i) =>
+                                <View key={i} style={{flex:1,marginTop:40,marginBottom:40,width:screenWidth,alignItems:'center'}}>
+                                    <View style={{
+                                        flex:1,
+                                        width:screenWidth*0.6,
+                                        alignItems:'center',
+                                        backgroundColor:'rgba(0,0,0,0.5)',
+                                        paddingVertical:30,
+                                        paddingHorizontal:20,
+                                        borderRadius:10
+                                    }}>
+                                        <Text style={{color:'white'}}>{item.content}</Text>
+                                    </View>
+                                </View>
+                                )
+                                }
+                            </View>
+                        </Animated.View>
+                    </ScrollView>
+                    <View style={{height:30}}/>
+                    <View style={[{flex:1,alignSelf:'center',flexDirection:'row'}]}>
+                        <Button large style={{borderRadius:10}} onPress={() => this.onButtonClick()}>
+                            <Text>{this.state.isPause? '继续':'暂停'}</Text>
+                        </Button>
+                        <View style={{width:30}}/>
+                        <Button large danger style={{borderRadius:10}} onPress={() => this.onAbandonButtonClick()}>
+                            <Text>放弃</Text>
+                        </Button>
                     </View>
-                    <View style={[{marginTop:50, alignSelf:'center',flexDirection : 'row'}]}>
-                <Button style={{borderRadius:100, width:100, height:100}} onPress={() => this.onButtonClick()}>
-                    <Text style={[{fontSize : 30}]}>{this.state.isPause? '继续':'暂停'}</Text>
-                </Button>
-                <Button style={{borderRadius:100,marginTop:50,width:100, height:100}} onPress={() => this.onAbandonButtonClick()}>
-                    <Text  style={[{fontSize : 30}]}>放弃</Text>
-                </Button>
-                    </View>
-            </View>
-            <View>
-    <ScrollVertical
-        onChange={(index => {
-            this.index = index;
-        })}
-        enableAnimation={true}
-        data={array}
-        delay={2500}
-        duration={1000}
-        scrollHeight={34}
-        scrollStyle={{alignItems: 'center' }}
-        />
-            </View>
-            </View>
+                </View>
         );
     }
 }
@@ -159,12 +221,18 @@ export default class Timer extends SoundPlay {
         this.state = {
             targetTime: "0",
             title:null,
+            tag:null,
             isReady: true,
             selected: null,
             modalTransparent: true,
             modalVisible:false,
             isPlaySound:false,
+            x1:0,
+            x2:0,
+            timeList:['1','5','15','30','60'],
+            playList:['不播放白噪音','林间之声','海洋波澜','淅淅夏雨','山谷蛙鸣','潺潺泉涌'],
         };
+        this._indextime = 0;this._indexplay = 0;
     }
     l2 = null;
     componentDidMount(){
@@ -181,53 +249,24 @@ export default class Timer extends SoundPlay {
             isReady: false,
         });
     };
-    selected(item){
-        if(item.initItem === '不播放白噪音'){
-            this.setState({isPlaySound : false});
-        }else if(item.initItem === '林间之声'){
-            this.setState({
-                isPlaySound : true,
-                choose : 0
-            });
-        }else if(item.initItem === '海洋波潮'){
-            this.setState({
-                isPlaySound : true,
-                choose : 1
-            });
-        }else if(item.initItem === '淅淅夏雨'){
-            this.setState({
-                isPlaySound : true,
-                choose : 2
-            });
-        }else if(item.initItem === '山谷蛙鸣'){
-            this.setState({
-                isPlaySound : true,
-                choose : 3
-            });
-        }else if(item.initItem === '潺潺泉涌'){
-            this.setState({
-                isPlaySound : true,
-                choose : 4
-            });
-        }
+
+    isBlank(str:String){
+        return str == null || typeof str === "undefined" || str == "" || str.trim() == " ";
     }
     timesUp(){
         let newHistory = new FormData();
-        newHistory.append("title",this.state.title === null?"专注就是妙":this.state.title);
+        newHistory.append("title",this.state.title === null?DEFAULT_TITLE:this.state.title);
         newHistory.append("length",this.state.targetTime);
+        const targetTime = this.state.targetTime;
         DeviceEventEmitter.emit('flush', newHistory);
         this.setState({isReady: true, modalVisible:false, selected:"0",isPlaySound:false,targetTime : '0'});
         Vibration.vibrate();
+        this.props.navigation.navigate('Success',{
+            content:`#${this.isBlank(this.state.title) || this.state.title == DEFAULT_TITLE?'专注':this.state.title}#就在刚才，我进行了一次${targetTime}分钟的专注。专注使我快乐！`})
     };
     uncommonTimesUp(){
         this.setState({isReady: true, modalVisible:false,isPlaySound : false, selected:"0",targetTime : '0'});
         this.state.isPlaySound ? this.stopSoundLooped() :  {};
-    }
-    onValueChange(value: string){
-        this.setState({
-            selected: value,
-            targetTime: parseInt(value),
-        });
     }
     render(){
         let modalBackgroundStyle = {
@@ -237,56 +276,102 @@ export default class Timer extends SoundPlay {
             {backgroundColor: '#fff', padding: 20}
             : null;
         return(
-            <Container style={[{flexDirection:'column',marginTop:10}]}>
+            <View style={{flexDirection:'column',justifyContent:'center',flex:1}}>
                 {this.state.isReady ? (
-                    <View style={[{flexDirection:'column'}]}>
-                        <Label style={{color:'white'}}>专注项目：</Label>
-                        <Item rounded style={[{backgroundColor:'#fff'}]}>
+                    <View style={{flex:1,flexDirection:'column',alignItems:'center'}}>
+                        <View style={{height:50}}/>
+                        <Form>
+                        <Label style={{color:'#002'}}>专注项目：</Label>
+                        <Item rounded style={[{backgroundColor:'transparent',width:screenWidth*0.8}]}>
                             <Input multiline={false}
-                                   placeholder={'专注就是妙'}
-                                   style={[{color : '#000000'}]}
-                                   onChangeText={(text) => this.setState({title:text})}
+                                   placeholder={DEFAULT_TITLE}
+                                   onChangeText={(text) => { this.setState({title:text})}}
                             />
                         </Item>
-                        <Label style={{color:'white'}}>专注时长：</Label>
-                        <Picker
-                            mode="dropdown"
-                            style={[{color : 'white'}]}
-                            placeholder="选择时长"
-                            selectedValue={this.state.selected}
-                            onValueChange={this.onValueChange.bind(this)}
+                        <Label style={{color:'#002'}}>打个标签：</Label>
+                        <Item rounded style={[{backgroundColor:'transparent',width:screenWidth*0.8}]}>
+                            <Input multiline={false}
+                                   placeholder={'一个就够'}
+                                   onChangeText={(text) => { this.setState({tag:text})}}
+                            />
+                        </Item>
+                        <Label style={{color:'#002'}}>专注时长：</Label>
+                        <View style={{flexDirection:'row',width:screenWidth*0.8}}>
+                            <Icon name={'remove'} onPress={() => {
+                                if (this._indextime !== 0){
+                                    this._timescrollView.scrollTo({x:this.state.x1 - screenWidth*0.8});
+                                    this._indextime--;
+                                    this.setState({x1:this.state.x1 - screenWidth*0.8})
+                                }
+                            }}
+                            />
+                        <ScrollView horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                    pagingEnabled={true}
+                                    ref={(scrollView) => { this._timescrollView = scrollView;}}
+                        >{
+                            this.state.timeList.map((item,i) =>
+                                    <View key={i} style={{flex:1,width:screenWidth*0.8,alignItems:'center'}}>
+                                        <Text>{item}</Text>
+                                </View>)
+                            }
+                        </ScrollView>
+                            <Icon name={'add'} onPress={() => {
+                                if (this._indextime !== this.state.timeList.length - 1){
+                                    this._timescrollView.scrollTo({x:this.state.x1 + screenWidth*0.8});
+                                    this._indextime++;
+                                    this.setState({x1:this.state.x1 + screenWidth*0.8})
+                                }
+                            }}
+                            />
+                        </View>
+                        <Label style={{color:'#002'}}>背景音乐：</Label>
+                        <View style={{flexDirection:'row',width:screenWidth*0.8}}>
+                            <Icon name={'remove'} onPress={() => {
+                                if (this._indexplay !== 0){
+                                    this._playscrollView.scrollTo({x:this.state.x2 - screenWidth*0.8});
+                                    this._indexplay--;
+                                    this.setState({x2:this.state.x2 - screenWidth*0.8})
+                                }
+                            }}
+                            />
+                        <ScrollView horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                    pagingEnabled={true}
+                                    ref={(scrollView) => { this._playscrollView = scrollView;}}
                         >
-                            <Picker.Item disabled label='选择时长' value='0'/>
-                            <Picker.Item label="1" value='1' />
-                            <Picker.Item label="5" value='5' />
-                            <Picker.Item label="15" value='15' />
-                            <Picker.Item label="30" value='30' />
-                            <Picker.Item label="60" value='60' />
-                        </Picker>
-                        <Button block style={[{borderRadius:40,marginTop:8}]} disabled={this.state.targetTime == '0'} onPress={() => this.startTiming()}>
+                            {
+                                this.state.playList.map((item,i) =>
+                                    <View key={i} style={{flex:1,width:screenWidth*0.8,alignItems:'center'}}>
+                                        <Text>{item}</Text>
+                                    </View>)
+                            }
+                        </ScrollView>
+                            <Icon name={'add'} onPress={() => {
+                                if (this._indexplay !== this.state.playList.length - 1){
+                                    this._playscrollView.scrollTo({x:this.state.x2 + screenWidth*0.8});
+                                    this._indexplay++;
+                                    this.setState({x2:this.state.x2 + screenWidth*0.8})
+                                }
+                            }}
+                            />
+                        </View>
+                        <Button block style={[{borderRadius:10,marginTop:8}]} onPress={() => this.startTiming()}>
                             <Text>开始专注</Text>
                         </Button>
-                        <RadioModal
-                            txtColor = {'white'}
-                            selectedValue={this.state.initId}
-                            onValueChange={(id,item)=>this.selected({initItem : item})}
-                        >
-                            <Text value='0'>不播放白噪音</Text>
-                            <Text value='1'>林间之声</Text>
-                            <Text value='2'>海洋波潮</Text>
-                            <Text value='3'>淅淅夏雨</Text>
-                            <Text value='4'>山谷蛙鸣</Text>
-                            <Text value='5'>潺潺泉涌</Text>
-                        </RadioModal>
+                        </Form>
                     </View>
                 ) : (
-                    <View>
+                    <View style={{flex:1}}>
                         <View>
                             <Modal
                                 animationType='fade'
                                 transparent={this.state.modalTransparent}
                                 visible={this.state.modalVisible}
                                 onRequestClose={() => {this.setModalVisible(false)}}
+                                style={{borderColor:'#888'}}
                             >
                                 <View style={[styles.container, modalBackgroundStyle]}>
                                     <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
@@ -316,15 +401,15 @@ export default class Timer extends SoundPlay {
                                 </View>
                             </Modal>
                         </View>
-                        <Tiktok
-                            isPlaySound = {this.state.isPlaySound}
-                            choose = {this.state.choose}
-                            timee={parseInt(this.state.targetTime) * 60}
-                            onAbandon={() => this.setModalVisible(true)}
+                        <Tiktok isPlaySound = {!(this._indexplay === 0)}
+                                choose = {this._indexplay === 0? undefined:this._indexplay - 1}
+                                timee={parseInt(this.state.timeList[this._indextime]) * 60}
+                                onAbandon={() => this.setModalVisible(true)}
+                                tag={this.state.tag}
                         />
                     </View>
                 )}
-            </Container>
+            </View>
         );
     }
 }

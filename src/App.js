@@ -7,6 +7,7 @@ import TimerPage from "./screens/TimerPage";
 import SocialPage from "./screens/SocialPage";
 import RegisterPage from './screens/registerPage';
 import LoginPage from "./screens/LoginPage";
+import SuccessPage from './screens/successPage';
 
 
 const Tab = TabNavigator(
@@ -70,12 +71,11 @@ const Nav = StackNavigator(
         },
         Register: {
             screen: RegisterPage,
-            navigationOptions:{
-                headerTitle:'注册',
-                headerTitleStyle:{
-                    alignSelf:'center',
-                }
-            },
+            navigationOptions:{},
+        },
+        Success: {
+            screen: SuccessPage,
+            navigationOptions:{},
         }
     },
     {

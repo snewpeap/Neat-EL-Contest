@@ -3,6 +3,9 @@ import {Button, Col, Container, Content, Form, Grid, Picker, Text, Textarea, Vie
 import {StyleSheet, DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
 import PostItem from '../postItem';
 
+String.prototype.trim=function(){
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+};
 const MAX = 50;
 export default class Social_quanzi extends Component{
     constructor(props){
@@ -26,6 +29,9 @@ export default class Social_quanzi extends Component{
             typeSelected: value,
         });
     }
+    isBlank(str:String){
+        return str == null || typeof str === "undefined" || str == "" || str.trim() == " ";
+    }
     onFlush(){
         fetch(`${localURL}/posts?type=&author=&requestFavorite=`,{
             method:'GET',
@@ -35,6 +41,7 @@ export default class Social_quanzi extends Component{
                 if (response.ok){
                     response.json().then((response) => {
                         this.setState({
+                            typeSelected:'normal',
                             posts:response.posts,
                         });
                     });
@@ -89,10 +96,32 @@ export default class Social_quanzi extends Component{
         });
     }
     send(){
-        let post = new FormData();
         let content = this.state.content.toString().replace(/[\n]/g, ' ');
+        let tagArr = null;let tag = null;
+        if (content.indexOf('#') !== -1) {
+            if (content.match(/[#]/g).length % 2 === 1) {
+                Platform.OS === 'android' ? ToastAndroid.show('标签格式错误', ToastAndroid.SHORT) : alert('标签格式错误');
+                return;
+            }
+            tagArr = content.split('#');
+            content = tagArr.pop();
+            tagArr.shift();
+            if (tagArr.length > 1){
+                Platform.OS === 'android' ? ToastAndroid.show('限一个标签', ToastAndroid.SHORT) : alert('限一个标签');
+                return;
+            }
+            if (this.isBlank(tagArr[0])){
+                Platform.OS === 'android' ? ToastAndroid.show('不能有空标签', ToastAndroid.SHORT) : alert('不能有空标签');
+                return;
+            }
+            tag = tagArr[0];
+        }else {
+            tag = '专注';
+        }
+        let post = new FormData();
         post.append('content', content);
         post.append('type', this.state.typeSelected);
+        post.append('tag', tag);
         fetch(`${localURL}/posts/create`,{
             method:'POST',
             headers:{},
@@ -122,7 +151,9 @@ export default class Social_quanzi extends Component{
                     <View style={[{flex: 1, backgroundColor: '#ddd'}]}>
                         <Form style={[{margin: 5}]}>
                             <Textarea rowSpan={3}
-                                      placeholder={`${MAX}字以内，随意发挥~`}
+                                      placeholder={this.state.typeSelected === 'normal'?
+                                          `刚刚完成了专注？分享一下吧！${MAX}字以内\n标签格式:#标签#正文`:
+                                          `有什么好的经验？分享一下吧！${MAX}字以内\n标签格式:#标签#正文`}
                                       onChangeText={(text) => {
                                           this.setState({
                                               content: text,
@@ -160,10 +191,7 @@ export default class Social_quanzi extends Component{
                     </View>
                     <View style={[{flex: 3,backgroundColor:'transparent'}]}>
                         {Object.keys(this.state.posts).length !== 0 ? (
-                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-                            <Container>
-                                <Content>
-                            <View>
+                                    <View>
                                 {
                                     this.state.posts.map((item, i) =>
                                         <PostItem first last
@@ -173,19 +201,10 @@ export default class Social_quanzi extends Component{
                                         />)
                                 }
                                 </View>
-                                </Content>
-                            </Container>
-                            </ImageBackground>
                         ) : (
-                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-                                <Container>
-                                    <Content>
-                            <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
-                                <Text>世界上还没有一条推文</Text>
-                            </View>
-                                    </Content>
-                                </Container>
-                            </ImageBackground>
+                                    <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
+                                        <Text>世界上还没有一条推文</Text>
+                                    </View>
                         )
                         }
                         </View>

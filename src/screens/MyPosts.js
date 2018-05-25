@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Button, Container, Content, Header, Icon, Left, Right, Text, View} from "native-base";
+import {Body, Button, Container, Content, Header, Icon, Left, Right, Text, View} from "native-base";
 import {Platform, ToastAndroid} from "react-native";
 import PostItem from '../postItem';
 
@@ -87,7 +87,7 @@ export default class MyPosts extends Component{
                             <Icon name='ios-arrow-back'/>
                         </Button>
                     </Left>
-                    <Body style={{alignItem:'center'}}>
+                    <Body style={{alignItems:'center'}}>
                     <Text style={{color:'white'}}>我的推文</Text>
                     </Body>
                     <Right/>

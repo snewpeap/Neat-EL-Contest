@@ -30,28 +30,29 @@ export default class Social_wode extends Component{
     render(){
         return(
             <Container>
-                <ImageBackground  style={{}} source={require('../../lib/images/head_portrait.png')}>
-                <Header style={{height:240, opacity: 0,flexDirection:'column'}}>
-                </Header>
-                    <View style={{alignSelf:'center'}}>
-                        <Text style={{fontSize:30,color:'#222'}}>{nickname}</Text>
+                <View style={{height:30}}/>
+                    <View style={{height:20,alignItems:'center'}}>
+                        <Text style={{
+                            fontSize:30,
+                            color:'#222',
+                            textShadowOffset:{width:2,height:1},
+                            textShadowRadius:2,
+                            textShadowColor:'grey' }}
+                        >你好,{nickname}</Text>
                     </View>
-                </ImageBackground>
-                <Content scrollEnabled={false}>
+                <View style={{height:30}}/>
+                <Content>
                     <List>
-                        <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-                        <Container>
-                            <Content scrollEnabled={false}>
-                        <ListItem icon first last
-                                  style={styles.listitem}
-                                  background={TouchableNativeFeedback.SelectableBackground()}
-                                  onPress={() => {
-                                      this.props.navigation.navigate('MyPosts',{
-                                          callback:(params) => {
-                                              DeviceEventEmitter.emit('socialflush');
-                                          }});
-                                  }}
-                        >
+                                <ListItem icon first last
+                                          style={styles.listitem}
+                                          background={TouchableNativeFeedback.SelectableBackground()}
+                                          onPress={() => {
+                                              this.props.navigation.navigate('MyPosts',{
+                                                  callback:(params) => {
+                                                      DeviceEventEmitter.emit('socialflush');
+                                                  }});
+                                          }}
+                                >
                             <Left>
                                 <Icon name='person' style={{color:'#3d2fff'}}/>
                             </Left>
@@ -82,17 +83,6 @@ export default class Social_wode extends Component{
                                 <Icon active name="arrow-forward" />
                             </Right>
                         </ListItem>
-                        <ListItem icon first last style={styles.listitem}>
-                            <Left>
-                                <Icon name='cog' style={{color:'#333'}}/>
-                            </Left>
-                            <Body>
-                            <Text>设置</Text>
-                            </Body>
-                            <Right>
-                                <Icon active name="arrow-forward" />
-                            </Right>
-                        </ListItem>
 
                         <Separator style={styles.separator}/>
 
@@ -107,9 +97,6 @@ export default class Social_wode extends Component{
                             <Text style={{color:'red',textAlign:'center'}}>退出登录</Text>
                             </Body>
                         </ListItem>
-                            </Content>
-                        </Container>
-                        </ImageBackground>
                     </List>
                 </Content>
             </Container>

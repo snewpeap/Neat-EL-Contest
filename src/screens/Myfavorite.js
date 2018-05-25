@@ -86,7 +86,7 @@ export default class MyFavorite extends Component{
                             <Icon name='ios-arrow-back'/>
                         </Button>
                     </Left>
-                    <Body style={{alignItem:'center'}}>
+                    <Body style={{alignItems:'center'}}>
                     <Text style={{color:'white'}}>我的收藏</Text>
                     </Body>
                     <Right/>
