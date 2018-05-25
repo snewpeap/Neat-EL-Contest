@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {StyleSheet, ToastAndroid,Platform,DeviceEventEmitter} from 'react-native';
-import {Button, Container, Content, Header, Input, Item, Label, Text} from "native-base";
+import {Body, Button, Container, Content, Header, Input, Item, Label, Left, Right, Text} from "native-base";
 
 String.prototype.trim=function(){
     return this.replace(/(^\s*)|(\s*$)/g, "");
@@ -142,8 +142,20 @@ export default class RegisterPage extends Component{
     render(){
         return(
             <Container>
-                <Header style={{height:35}}>
-                    <Text style={{fontSize:24,color : '#fdffff'}}>注册</Text>
+                <Header>
+                    <Left>
+                        <Button transparent
+                                onPress={() => {
+                                    this.props.navigation.goBack();
+                                }}
+                        >
+                            <Icon name='ios-arrow-back'/>
+                        </Button>
+                    </Left>
+                    <Body style={{alignItem:'center'}}>
+                    <Text style={{color:'white'}}>注册</Text>
+                    </Body>
+                    <Right/>
                 </Header>
                 <Content>
                     <Item regular style={styles.itemStyle}>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Body, Button, Card, CardItem, Icon, Left, Right, Text} from "native-base";
+import {Badge, Body, Button, Card, CardItem, Icon, Left, Right, Text} from "native-base";
 import moment from "moment";
 
 export default class PostItem extends Component{
@@ -32,19 +32,25 @@ export default class PostItem extends Component{
         });
     }
     render(){
+        let color = this.props.detail.type === 'jingyan'?'#c3e3eb':'#ffffd4';
         return(
-            <Card style={{flex:0}}>
-                <CardItem bordered>
+            <Card style={{flex:0,backgroundColor:color,borderTopStartRadius:20,borderTopEndRadius:20,borderBottomRightRadius:20}}>
+                <CardItem bordered style={{backgroundColor:color,borderRadius:20}}>
                     <Body>
                     <Text style={{fontSize:20}}>{this.props.detail.author.nickname}:</Text>
                     </Body>
+                    <Right>
+                        <Badge style={{backgroundColor:`#${this.props.detail.color}`}}>
+                            <Text style={{color:'white'}}>{`${this.props.detail.type === 'normal'?'动态':'经验'} #${this.props.detail.tag}#`}</Text>
+                        </Badge>
+                    </Right>
                 </CardItem>
-                <CardItem>
+                <CardItem style={{backgroundColor:color}}>
                     <Body>
-                    <Text>{`#${this.props.detail.type === 'normal'?'动态':'经验'}#   ${this.props.detail.content}`}</Text>
+                    <Text>{this.props.detail.content}</Text>
                     </Body>
                 </CardItem>
-                <CardItem>
+                <CardItem style={{backgroundColor:color,borderRadius:20}}>
                     <Left>
                         <Text note>{moment(this.props.detail.date).format('YYYY-MM-DD HH:mm')}</Text>
                     </Left>

@@ -11,22 +11,22 @@ import MyFavorite from './Myfavorite';
 
 const Tab = TabNavigator(
     {
-        Social_wode:{
-            screen : Social_wode,
-            navigationOptions :{
-                tabBarLabel:'Mine',
-                tabBarIcon : ({focused}) => (
-                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
-                )
-            },
-        },
         Social_quanzi: {
             screen: Social_quanzi,
             navigationOptions: {
-                tabBarLabel:'Moments',
+                tabBarLabel:'WORLD',
                 tabBarIcon: ({focused}) => (
-                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>圈子</Text>
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>世界</Text>
                 ),
+            },
+        },
+        Social_wode:{
+            screen : Social_wode,
+            navigationOptions :{
+                tabBarLabel:'ME',
+                tabBarIcon : ({focused}) => (
+                    <Text style={{color: focused?'white':'#3d2fff', fontSize:18}}>我的</Text>
+                )
             },
         },
     },
@@ -35,7 +35,7 @@ const Tab = TabNavigator(
         tabBarPosition: 'top',
         lazy: false,
         swipeEnabled: true,
-        initialRouteName: 'Social_wode',
+        initialRouteName: 'Social_quanzi',
         tabBarOptions:{
             activeTintColor: 'white',
             inactiveTintColor: '#3d2fff',

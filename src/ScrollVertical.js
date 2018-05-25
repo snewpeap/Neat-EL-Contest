@@ -128,9 +128,6 @@ export default class ScrollVertical extends Component {
                     this.state.kb_tempValue = 0;
                 }
                 this.startAnimation();
-
-
-
             })
     }
 }
