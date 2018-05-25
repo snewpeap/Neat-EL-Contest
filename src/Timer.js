@@ -51,7 +51,7 @@ class Tiktok extends SoundPlay{
     }
     componentDidMount(){
         this.d1 = DeviceEventEmitter.addListener('abandonCanceled',() => {this.tiktok();this.setState({isPause:false});});
-        if (login) {
+        if (isLogin) {
             fetch(`${localURL}/posts/byTag?tag=${this.props.tag == DEFAULT_TITLE ? '专注' : this.props.tag}&type=jingyan&count=${this.props.timee / 15}`, {
                 method: 'GET',
                 credentials: 'include',
