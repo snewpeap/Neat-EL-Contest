@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
-import {StyleSheet, ToastAndroid,Platform} from 'react-native';
-import {Button, Container, Content, Header, Input, Item, Label, Text} from "native-base";
+import {StyleSheet, ToastAndroid,Platform,DeviceEventEmitter} from 'react-native';
+import {Body, Button, Container, Content, Header, Input, Item, Label, Left, Right, Text} from "native-base";
 
 String.prototype.trim=function(){
     return this.replace(/(^\s*)|(\s*$)/g, "");
@@ -25,10 +25,19 @@ export default class RegisterPage extends Component{
             isAbleToCommit:false,
         };
     }
-
+    d1 = null;
+    componentDidMount(){
+        this.d1 = DeviceEventEmitter.addListener('afterCheck',() => {
+            this.afterCheck();
+        });
+    }
+    componentWillUnmount(){
+        this.d1.remove();
+    }
     check(emitter:string){
         switch (emitter){
             case 'username':
+                /*
                 this.setState({
                     expectCorrect:Object.assign(
                         {},
@@ -36,33 +45,46 @@ export default class RegisterPage extends Component{
                         {usernameIsOK:(this.usernameFormatCheck())}
                         )
                 });
+                */
+                this.state.expectCorrect.usernameIsOK = this.usernameFormatCheck();
                 break;
             case 'password':
+                /*
                 this.setState({expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
                         {passwordIsOK:(this.passwordFormatCheck())}
                     )
                 });
+                */
+                this.state.expectCorrect.passwordIsOK = this.passwordFormatCheck();
                 break;
             case 'again':
+                /*
                 this.setState({expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
                         {passwordIsConfirm:(this.state.password == this.state.passwordAgain)}
                     )
                 });
+                */
+                this.state.expectCorrect.passwordIsConfirm = (this.state.password == this.state.passwordAgain);
                 break;
             case 'nickname':
+                /*
                 this.setState({expectCorrect:Object.assign(
                         {},
                         this.state.expectCorrect,
                         {nicknameIsOK:(!(this.isBlank(this.state.nickname)))}
                     )});
+                    */
+                this.state.expectCorrect.nicknameIsOK = !this.isBlank(this.state.nickname);
                 break;
             default:
                 break;
         }
+    }
+    afterCheck(){
         let flag = true;
         Object.keys(this.state.expectCorrect).forEach((key) => {
             if (this.state.expectCorrect[key] === false){
@@ -72,20 +94,19 @@ export default class RegisterPage extends Component{
         });
         if (flag) {this.setState({isAbleToCommit:true});}
     }
-
     isBlank(str:String){
         return str == null || typeof str === "undefined" || str == "" || str.trim() == " ";
     }
 
     usernameFormatCheck(){
         const pattern = /^[A-z]{5,20}$/;
-        this.setState({tip1:(pattern.test(this.state.username) && !this.isBlank(this.state.username))?null:'用户名不符合格式'});
+        this.state.tip1 = (pattern.test(this.state.username) && !this.isBlank(this.state.username))?null:'用户名不符合格式';
         return pattern.test(this.state.username)&&!this.isBlank(this.state.username);
     }
 
     passwordFormatCheck(){
         const pattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
-        this.setState({tip2:(pattern.test(this.state.password) && !this.isBlank(this.state.password))?null:'密码不符合格式'});
+        this.state.tip2 = pattern.test(this.state.password) && !this.isBlank(this.state.password)?null:'密码不符合格式';
         return pattern.test(this.state.password)&&!this.isBlank(this.state.password);
     }
 
@@ -121,8 +142,20 @@ export default class RegisterPage extends Component{
     render(){
         return(
             <Container>
-                <Header style={{height:35}}>
-                    <Text style={{fontSize:24,color : '#fdffff'}}>注册</Text>
+                <Header>
+                    <Left>
+                        <Button transparent
+                                onPress={() => {
+                                    this.props.navigation.goBack();
+                                }}
+                        >
+                            <Icon name='ios-arrow-back'/>
+                        </Button>
+                    </Left>
+                    <Body style={{alignItem:'center'}}>
+                    <Text style={{color:'white'}}>注册</Text>
+                    </Body>
+                    <Right/>
                 </Header>
                 <Content>
                     <Item regular style={styles.itemStyle}>
@@ -131,7 +164,7 @@ export default class RegisterPage extends Component{
                             multiline={false}
                             placeholder='5位以上的字母组合'
                             onChangeText={(text) => this.setState({username:text})}
-                            onBlur={() => this.check('username')}
+                            onBlur={() => {this.check('username');DeviceEventEmitter.emit('afterCheck');}}
                             onSubmitEditing={() => this.check('username')}
                             style={styles.textAreaStyle}
                         />
@@ -143,7 +176,7 @@ export default class RegisterPage extends Component{
                                multiline={false}
                                placeholder='6位以上大小写字母与数字组合'
                                onChangeText={(text) => this.setState({password:text})}
-                               onBlur={() => this.check('password')}
+                               onBlur={() => {this.check('password');DeviceEventEmitter.emit('afterCheck');}}
                                onSubmitEditing={() => this.check('password')}
                                style={styles.textAreaStyle}
                         />
@@ -155,8 +188,8 @@ export default class RegisterPage extends Component{
                                multiline={false}
                                editable={!this.isBlank(this.state.password)}
                                placeholder='请再次输入您的密码'
-                               onChangeText={(text) => this.setState({passwordAgain:text})}
-                               onBlur={() => this.check('again')}
+                               onChangeText={(text) => {this.setState({passwordAgain:text});this.check('again')}}
+                               onBlur={() => {this.check('again');DeviceEventEmitter.emit('afterCheck');}}
                                onSubmitEditing={() => this.check('again')}
                                style={styles.textAreaStyle}/>
                     </Item>
@@ -169,7 +202,7 @@ export default class RegisterPage extends Component{
                                editable={!(this.isBlank(this.state.password)||this.isBlank(this.state.username))}
                                style={styles.textAreaStyle}
                                onChangeText={(text) => this.setState({nickname:text})}
-                               onBlur={() => this.check('nickname')}
+                               onBlur={() => {this.check('nickname');DeviceEventEmitter.emit('afterCheck');}}
                                onSubmitEditing={() => this.check('nickname')}
                         />
                     </Item>

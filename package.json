@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "color": "^3.0.0",
+    "crypto": "^1.0.1",
+    "identicon.js": "^2.3.2",
     "moment": "^2.22.1",
     "native-base": "^2.4.3",
     "react": "16.3.1",
@@ -24,7 +26,8 @@
     "babel-jest": "22.4.3",
     "babel-preset-react-native": "4.0.0",
     "jest": "22.4.3",
-    "react-test-renderer": "16.3.1"
+    "react-test-renderer": "16.3.1",
+    "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "jest": {
     "preset": "react-native"

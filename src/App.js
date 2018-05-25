@@ -7,6 +7,7 @@ import TimerPage from "./screens/TimerPage";
 import SocialPage from "./screens/SocialPage";
 import RegisterPage from './screens/registerPage';
 import LoginPage from "./screens/LoginPage";
+import SuccessPage from './screens/successPage';
 
 
 const Tab = TabNavigator(
@@ -14,7 +15,7 @@ const Tab = TabNavigator(
         HistoryPage:{
             screen: HistoryPage,
             navigationOptions:{
-                tabBarLabel: 'History',
+                tabBarLabel: '历史',
                 tabBarIcon: ({focused}) => (<Icon name = 'paper' style={{color: focused?'white':'#3d2fff'}}/>),
                 tabBarOnPress:(obj) => {
                     DeviceEventEmitter.emit('flush');
@@ -25,14 +26,14 @@ const Tab = TabNavigator(
         TimerPage:{
             screen: TimerPage,
             navigationOptions:{
-                tabBarLabel: 'Timer',
+                tabBarLabel: '专注',
                 tabBarIcon: ({focused}) => (<Icon name = 'alarm' style={{color: focused?'white':'#3d2fff'}}/>)
             },
         },
         SocialPage:{
             screen: SocialPage,
             navigationOptions:{
-                tabBarLabel: 'Social',
+                tabBarLabel: '社交',
                 tabBarIcon: ({focused}) => (<Icon name = 'person' style={{color: focused?'white':'#3d2fff'}}/>),
                 tabBarOnPress:(obj) => {
                     DeviceEventEmitter.emit('socialflush');
@@ -70,12 +71,11 @@ const Nav = StackNavigator(
         },
         Register: {
             screen: RegisterPage,
-            navigationOptions:{
-                headerTitle:'注册',
-                headerTitleStyle:{
-                    alignSelf:'center',
-                }
-            },
+            navigationOptions:{},
+        },
+        Success: {
+            screen: SuccessPage,
+            navigationOptions:{},
         }
     },
     {

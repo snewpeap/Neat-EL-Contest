@@ -93,45 +93,24 @@ export default class History extends Component{
             <Container>
                 <Content>
                     {isLogin? (Object.keys(this.state.historys).length !== 0?(
-                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
-                        <Container>
-                            <Content>
                         <View>
                             {
                                 this.state.historys.map((item,i) => <HistoryItem key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
                             }
                             </View>
-                            </Content>
-                        </Container>
-                        </ImageBackground>
                         ):(
-                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
-                            <Container>
-                                <Content>
                             <View style={[{flex:1, alignItems:'center'}]}>
                                 <Text>你还没有专注历史</Text>
                             </View>
-                                </Content>
-                            </Container>
-                        </ImageBackground>
                             )
                         ):(
-                        <ImageBackground style={{}} source={require('../lib/images/background_1.png')}>
-                            <Container>
-                                <Content>
-                                    {isLogin?
-                                        <History/>:
-                                        <View>
-                                            <Text>你还没有登陆</Text>
-                                            <Text>不登陆你能变强吗？</Text>
-                                            <Button onPress={() => DeviceEventEmitter.emit('jumpToLogin')}>
-                                                <Text>去登陆</Text>
-                                            </Button>
-                                        </View>
-                                    }
-                                    </Content>
-                            </Container>
-                            </ImageBackground>
+                            <View>
+                                <Text>你还没有登陆</Text>
+                                <Text>不登陆你能变强吗？</Text>
+                                <Button onPress={() => DeviceEventEmitter.emit('jumpToLogin')}>
+                                    <Text>去登陆</Text>
+                                </Button>
+                            </View>
                     )
                 }
                 </Content>

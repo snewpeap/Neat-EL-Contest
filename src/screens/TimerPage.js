@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
 import {Container, Content, Footer} from 'native-base';
-import {
-    View,
-    Text,
-    Animated,
-    Easing,
-    StyleSheet,
-    ImageBackground
-} from 'react-native';
 import Timer from "../Timer";
 
 
@@ -21,9 +13,7 @@ class TimerPage extends Component{
         return (
             <Container style={{flexDirection : 'column'}}>
                 <Content scrollEnabled={false}>
-                    <ImageBackground  style={{}} source={require('../../lib/images/background_2.png')}>
-                <Timer/>
-                    </ImageBackground>
+                        <Timer navigation={this.props.navigation}/>
                 </Content>
             </Container>
         );

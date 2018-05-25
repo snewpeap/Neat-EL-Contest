@@ -3,6 +3,9 @@ import {Button, Col, Container, Content, Form, Grid, Picker, Text, Textarea, Vie
 import {StyleSheet, DeviceEventEmitter, ToastAndroid, Platform, ImageBackground} from 'react-native';
 import PostItem from '../postItem';
 
+String.prototype.trim=function(){
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+};
 const MAX = 50;
 export default class Social_quanzi extends Component{
     constructor(props){
@@ -26,8 +29,11 @@ export default class Social_quanzi extends Component{
             typeSelected: value,
         });
     }
+    isBlank(str:String){
+        return str == null || typeof str === "undefined" || str == "" || str.trim() == " ";
+    }
     onFlush(){
-        fetch(`${localURL}/posts?type=&author=`,{
+        fetch(`${localURL}/posts?type=&author=&requestFavorite=`,{
             method:'GET',
             credentials:'include',
         })
@@ -35,11 +41,14 @@ export default class Social_quanzi extends Component{
                 if (response.ok){
                     response.json().then((response) => {
                         this.setState({
+                            typeSelected:'normal',
                             posts:response.posts,
-                        })
+                        });
                     });
                 } else {
-                    response.json().then((json) => (Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)));
+                    response.json().then((json) => {
+                        Platform.OS === 'android'?ToastAndroid.show(json.error, ToastAndroid.SHORT):alert(json.error)
+                    });
                 }
             })
             .catch((error) => {
@@ -58,18 +67,61 @@ export default class Social_quanzi extends Component{
                         Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => (Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
+                    response.json().then((json) => {Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
             });
     }
+    onFavorite(i,id,isFavorite,callback){
+        fetch(`${localURL}/favorite/${id}/${isFavorite?'remove':'create'}/`,{
+            method:isFavorite?'GET':'POST',
+            credentials:'include',
+        })
+            .then((response) => {
+                if (response.ok){
+                    callback(true);
+                    response.json().then((json) => {
+                        Platform.OS === 'android' ? ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
+                    })
+                } else if (response.status === 500){
+                    callback(false);
+                    response.json().then((json) => {
+                        Platform.OS === "android" ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
+                }
+            }).catch((error) => {
+            Platform.OS === 'android'?ToastAndroid.show(error.message, ToastAndroid.SHORT):alert(error.message)
+        });
+    }
     send(){
-        let post = new FormData();
         let content = this.state.content.toString().replace(/[\n]/g, ' ');
+        let tagArr = null;let tag = null;
+        if (content.indexOf('#') !== -1) {
+            if (content.match(/[#]/g).length % 2 === 1) {
+                Platform.OS === 'android' ? ToastAndroid.show('标签格式错误', ToastAndroid.SHORT) : alert('标签格式错误');
+                return;
+            }
+            tagArr = content.split('#');
+            content = tagArr.pop();
+            tagArr.shift();
+            if (tagArr.length > 1){
+                Platform.OS === 'android' ? ToastAndroid.show('限一个标签', ToastAndroid.SHORT) : alert('限一个标签');
+                return;
+            }
+            if (this.isBlank(tagArr[0])){
+                Platform.OS === 'android' ? ToastAndroid.show('不能有空标签', ToastAndroid.SHORT) : alert('不能有空标签');
+                return;
+            }
+            tag = tagArr[0];
+        }else {
+            tag = '专注';
+        }
+        let post = new FormData();
         post.append('content', content);
         post.append('type', this.state.typeSelected);
+        post.append('tag', tag);
         fetch(`${localURL}/posts/create`,{
             method:'POST',
             headers:{},
@@ -84,7 +136,8 @@ export default class Social_quanzi extends Component{
                         Platform.OS === 'android'?ToastAndroid.show(json.message, ToastAndroid.SHORT):alert(json.message)
                     })
                 } else if (response.status === 500) {
-                    response.json().then((json) => (Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)));
+                    response.json().then((json) => {Platform.OS === 'android' ?ToastAndroid.show(json.error, ToastAndroid.SHORT) : alert(json.error)
+                    });
                 }
             })
             .catch((error) => {
@@ -98,7 +151,9 @@ export default class Social_quanzi extends Component{
                     <View style={[{flex: 1, backgroundColor: '#ddd'}]}>
                         <Form style={[{margin: 5}]}>
                             <Textarea rowSpan={3}
-                                      placeholder={`${MAX}字以内，随意发挥~`}
+                                      placeholder={this.state.typeSelected === 'normal'?
+                                          `刚刚完成了专注？分享一下吧！${MAX}字以内\n标签格式:#标签#正文`:
+                                          `有什么好的经验？分享一下吧！${MAX}字以内\n标签格式:#标签#正文`}
                                       onChangeText={(text) => {
                                           this.setState({
                                               content: text,
@@ -109,14 +164,12 @@ export default class Social_quanzi extends Component{
                             />
                         </Form>
                         <Grid>
-                            <Col style={[styles.col,{flex:1}]}/>
-                            <Col style={styles.col}>
+                            <Col style={[styles.col,{flex:3}]}>
                                 <Picker
                                     mode="dropdown"
-                                    placeholder={'类型'}
                                     selectedValue={this.state.typeSelected}
                                     onValueChange={this.onValueChange.bind(this)}
-                                    style={[{width: 75}]}
+                                    style={[{width: 100}]}
                                 >
                                     <Picker.Item label="动态" value='normal'/>
                                     <Picker.Item label="经验" value='jingyan'/>
@@ -138,27 +191,20 @@ export default class Social_quanzi extends Component{
                     </View>
                     <View style={[{flex: 3,backgroundColor:'transparent'}]}>
                         {Object.keys(this.state.posts).length !== 0 ? (
-                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-                            <Container>
-                                <Content>
-                            <View>
+                                    <View>
                                 {
-                                    this.state.posts.map((item, i) => <PostItem first last key={i} detail={item} onDelete={() => this.onDelete(item._id)}/>)
+                                    this.state.posts.map((item, i) =>
+                                        <PostItem first last
+                                                  key={i} detail={item} favor={false}
+                                                  onDelete={() => this.onDelete(item._id)}
+                                                  onFavorite={(isFavorite,callback) => this.onFavorite(i,item._id,isFavorite,callback)}
+                                        />)
                                 }
                                 </View>
-                                </Content>
-                            </Container>
-                            </ImageBackground>
                         ) : (
-                            <ImageBackground style={{}} source={require('../../lib/images/background_3.png')}>
-                                <Container>
-                                    <Content>
-                            <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
-                                <Text>世界上还没有一条推文</Text>
-                            </View>
-                                    </Content>
-                                </Container>
-                            </ImageBackground>
+                                    <View style={[{flex: 1, alignItems: 'center',backgroundColor:'transparent'}]}>
+                                        <Text>世界上还没有一条推文</Text>
+                                    </View>
                         )
                         }
                         </View>
