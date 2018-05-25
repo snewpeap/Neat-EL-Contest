@@ -9,13 +9,13 @@ import ScrollVertical from './ScrollVertical';
 
 const dataArray = [
     {
-        title: '降价了',
+        title: '专注大法好',
     },
     {
-        title: '全场五折',
+        title: '我爱专注',
     },
     {
-        title: '打到骨折dadadadadadadad',
+        title: '专注爱我',
     }
 ];
 
